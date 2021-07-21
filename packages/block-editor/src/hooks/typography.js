@@ -43,6 +43,13 @@ import {
 	useIsFontSizeDisabled,
 } from './font-size';
 import {
+	TEXT_COLUMNS_SUPPORT_KEY,
+	TextColumnsEdit,
+	hasTextColumnsValue,
+	resetTextColumns,
+	useIsTextColumnsDisabled,
+} from './text-columns';
+import {
 	TEXT_DECORATION_SUPPORT_KEY,
 	TextDecorationEdit,
 	hasTextDecorationValue,
@@ -71,6 +78,7 @@ export const TYPOGRAPHY_SUPPORT_KEYS = [
 	FONT_STYLE_SUPPORT_KEY,
 	FONT_WEIGHT_SUPPORT_KEY,
 	FONT_FAMILY_SUPPORT_KEY,
+	TEXT_COLUMNS_SUPPORT_KEY,
 	TEXT_DECORATION_SUPPORT_KEY,
 	TEXT_TRANSFORM_SUPPORT_KEY,
 	LETTER_SPACING_SUPPORT_KEY,
@@ -82,6 +90,7 @@ export function TypographyPanel( props ) {
 	const isFontSizeDisabled = useIsFontSizeDisabled( props );
 	const isFontAppearanceDisabled = useIsFontAppearanceDisabled( props );
 	const isLineHeightDisabled = useIsLineHeightDisabled( props );
+	const isTextColumnsDisabled = useIsTextColumnsDisabled( props );
 	const isTextDecorationDisabled = useIsTextDecorationDisabled( props );
 	const isTextTransformDisabled = useIsTextTransformDisabled( props );
 	const isLetterSpacingDisabled = useIsLetterSpacingDisabled( props );
@@ -228,6 +237,18 @@ export function TypographyPanel( props ) {
 					<TextTransformEdit { ...props } />
 				</ToolsPanelItem>
 			) }
+			{ ! isTextColumnsDisabled && (
+				<ToolsPanelItem
+					hasValue={ () => hasTextColumnsValue( props ) }
+					label={ __( 'Text columns' ) }
+					onDeselect={ () => resetTextColumns( props ) }
+					isShownByDefault={ defaultControls?.textColumns }
+					resetAllFilter={ createResetAllFilter( 'textColumns' ) }
+					panelId={ clientId }
+				>
+					<TextColumnsEdit { ...props } />
+				</ToolsPanelItem>
+			) }
 		</InspectorControls>
 	);
 }
@@ -244,6 +265,7 @@ function useIsTypographyDisabled( props = {} ) {
 		useIsFontSizeDisabled( props ),
 		useIsLineHeightDisabled( props ),
 		useIsFontFamilyDisabled( props ),
+		useIsTextColumnsDisabled( props ),
 		useIsTextDecorationDisabled( props ),
 		useIsTextTransformDisabled( props ),
 		useIsLetterSpacingDisabled( props ),
