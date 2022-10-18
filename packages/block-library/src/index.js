@@ -122,8 +122,8 @@ import isBlockMetadataExperimental from './utils/is-block-metadata-experimental'
 /**
  * Function to get all the block-library blocks in an array
  */
-const getAllBlocks = () =>
-	[
+const getAllBlocks = () => {
+	const blocks = [
 		// Common blocks are grouped at the top to prioritize their display
 		// in various contexts — like the inserter and auto-complete components.
 		paragraph,
@@ -149,10 +149,8 @@ const getAllBlocks = () =>
 		cover,
 		embed,
 		file,
-		form,
 		group,
 		html,
-		inputField,
 		latestComments,
 		latestPosts,
 		mediaText,
@@ -226,7 +224,13 @@ const getAllBlocks = () =>
 		termDescription,
 		queryTitle,
 		postAuthorBiography,
-	].filter( Boolean );
+	];
+	if ( window?.__experimentalEnableFormBlocks ) {
+		blocks.push( form );
+		blocks.push( inputField );
+	}
+	return blocks.filter( Boolean );
+};
 
 /**
  * Function to get all the core blocks in an array.
