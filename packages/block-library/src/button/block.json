@@ -9,36 +9,40 @@
 	"keywords": [ "link" ],
 	"textdomain": "default",
 	"attributes": {
+		"tagName": {
+			"type": "string",
+			"default": "a"
+		},
 		"textAlign": {
 			"type": "string"
 		},
 		"url": {
 			"type": "string",
 			"source": "attribute",
-			"selector": "a",
+			"selector": "a,button",
 			"attribute": "href"
 		},
 		"title": {
 			"type": "string",
 			"source": "attribute",
-			"selector": "a",
+			"selector": "a,button",
 			"attribute": "title"
 		},
 		"text": {
 			"type": "string",
 			"source": "html",
-			"selector": "a"
+			"selector": "a,button"
 		},
 		"linkTarget": {
 			"type": "string",
 			"source": "attribute",
-			"selector": "a",
+			"selector": "a,button",
 			"attribute": "target"
 		},
 		"rel": {
 			"type": "string",
 			"source": "attribute",
-			"selector": "a",
+			"selector": "a,button",
 			"attribute": "rel"
 		},
 		"placeholder": {
