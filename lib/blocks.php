@@ -352,3 +352,15 @@ function gutenberg_register_legacy_social_link_blocks() {
 }
 
 add_action( 'init', 'gutenberg_register_legacy_social_link_blocks' );
+
+register_block_pattern(
+	'custom-pattern',
+	array(
+		'title'      => _x( 'Start post pattern', 'Block pattern title', 'gutenberg' ),
+		'blockTypes' => array( 'core/paragraph', 'core/post-content' ),
+		// 'postTypes'  => array( 'page' ),
+		'content'    => '<!-- wp:paragraph -->
+<p>A start post pattern</p>
+<!-- /wp:paragraph -->',
+	)
+);

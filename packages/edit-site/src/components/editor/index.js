@@ -33,6 +33,7 @@ import KeyboardShortcuts from '../keyboard-shortcuts';
 import InserterSidebar from '../secondary-sidebar/inserter-sidebar';
 import ListViewSidebar from '../secondary-sidebar/list-view-sidebar';
 import WelcomeGuide from '../welcome-guide';
+import StartTemplateOptions from '../start-template-options';
 import { store as editSiteStore } from '../../store';
 import { GlobalStylesRenderer } from '../global-styles-renderer';
 import { GlobalStylesProvider } from '../global-styles/global-styles-provider';
@@ -166,6 +167,7 @@ export default function Editor() {
 					<GlobalStylesProvider>
 						<BlockContextProvider value={ blockContext }>
 							<SidebarComplementaryAreaFills />
+							<StartTemplateOptions />
 							<InterfaceSkeleton
 								enableRegionNavigation={ false }
 								className={

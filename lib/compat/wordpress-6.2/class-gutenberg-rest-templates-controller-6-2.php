@@ -17,8 +17,7 @@ class Gutenberg_REST_Templates_Controller_6_2 extends Gutenberg_REST_Templates_C
 	 * @return void
 	 */
 	public function register_routes() {
-		parent::register_routes();
-		// Get fallback template content.
+
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/lookup',
@@ -41,10 +40,17 @@ class Gutenberg_REST_Templates_Controller_6_2 extends Gutenberg_REST_Templates_C
 							'description' => __( 'The template prefix for the created template. This is used to extract the main template type ex. in `taxonomy-books` we extract the `taxonomy`', 'gutenberg' ),
 							'type'        => 'string',
 						),
+						'ignore_empty'    => array(
+							'description' => __( 'If true templates with empty content are ignored.', 'gutenberg' ),
+							'type'        => 'boolean',
+							'default'     => false,
+						),
 					),
 				),
 			)
 		);
+		parent::register_routes();
+		// Get fallback template content.
 	}
 
 	/**
@@ -56,8 +62,16 @@ class Gutenberg_REST_Templates_Controller_6_2 extends Gutenberg_REST_Templates_C
 	 */
 	public function get_template_fallback( $request ) {
 		$hierarchy         = get_template_hierarchy( $request['slug'], $request['is_custom'], $request['template_prefix'] );
-		$fallback_template = resolve_block_template( $request['slug'], $hierarchy, '' );
-		$response          = $this->prepare_item_for_response( $fallback_template, $request );
+		$fallback_template = null;
+		if ( true === $request['ignore_empty'] ) {
+			do {
+				$fallback_template = resolve_block_template( $request['slug'], $hierarchy, '' );
+				array_shift( $hierarchy );
+			} while ( ! empty( $hierarchy ) && empty( $fallback_template->content ) );
+		} else {
+			$fallback_template = resolve_block_template( $request['slug'], $hierarchy, '' );
+		}
+		$response = $this->prepare_item_for_response( $fallback_template, $request );
 		return rest_ensure_response( $response );
 	}
 }

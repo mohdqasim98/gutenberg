@@ -1,0 +1,56 @@
+.edit-site-start-template-options__modal.components-modal__frame {
+	// To keep modal dimensions consistent as subsections are navigated, width
+	// and height are used instead of max-(width/height).
+	@include break-small() {
+		width: calc(100% - #{ $grid-unit-20 * 2 });
+		height: calc(100% - #{ $header-height * 2 });
+	}
+	@include break-medium() {
+		width: 70%;
+	}
+	@include break-large() {
+		height: fit-content;
+	}
+}
+
+.edit-site-start-template-options__modal-content .block-editor-block-patterns-list {
+	display: grid;
+	width: 100%;
+	margin-top: $grid-unit-05;
+	gap: $grid-unit-10;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%/2, max(240px, 100%/10)), 1fr));
+	grid-auto-rows: var(--wp-edit-site-start-template-options-grid-height);
+	.block-editor-block-patterns-list__list-item {
+		break-inside: avoid-column;
+		margin-bottom: $grid-unit-30;
+		width: 100%;
+
+		.block-editor-block-preview__container {
+			height: 100%;
+		}
+
+		.block-editor-block-preview__content {
+			width: 100%;
+			position: absolute;
+		}
+	}
+
+	// The start blank pattern is the last and we are selecting it.
+	.block-editor-block-patterns-list__list-item:nth-last-child(2) {
+		.block-editor-block-preview__container {
+			position: absolute;
+			padding: 0;
+			background: #f0f0f0;
+			&::after {
+				width: 100%;
+				top: 50%;
+				margin-top: -1em;
+				content: var(--wp-edit-site-start-template-options-start-blank);
+				text-align: center;
+			}
+		}
+		iframe {
+			display: none;
+		}
+	}
+}
