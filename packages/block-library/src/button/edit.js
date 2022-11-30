@@ -89,6 +89,8 @@ function ButtonEdit( props ) {
 		width,
 	} = attributes;
 
+	const TagName = tagName || 'a';
+
 	function onToggleOpenInNewTab( value ) {
 		const newLinkTarget = value ? '_blank' : undefined;
 
@@ -210,7 +212,7 @@ function ButtonEdit( props ) {
 						setAttributes( { textAlign: nextAlign } );
 					} }
 				/>
-				{ ! isURLSet && 'a' === tagName && (
+				{ ! isURLSet && 'a' === TagName && (
 					<ToolbarButton
 						name="link"
 						icon={ link }
@@ -219,7 +221,7 @@ function ButtonEdit( props ) {
 						onClick={ startEditing }
 					/>
 				) }
-				{ isURLSet && 'a' === tagName && (
+				{ isURLSet && 'a' === TagName && (
 					<ToolbarButton
 						name="link"
 						icon={ linkOff }
@@ -230,7 +232,7 @@ function ButtonEdit( props ) {
 					/>
 				) }
 			</BlockControls>
-			{ 'a' === tagName && isSelected && ( isEditingURL || isURLSet ) && (
+			{ 'a' === TagName && isSelected && ( isEditingURL || isURLSet ) && (
 				<Popover
 					placement="bottom"
 					onClose={ () => {
@@ -270,7 +272,7 @@ function ButtonEdit( props ) {
 				/>
 			</InspectorControls>
 			<InspectorControls __experimentalGroup="advanced">
-				{ 'a' === tagName && (
+				{ 'a' === TagName && (
 					<TextControl
                         __nextHasNoMarginBottom
 						label={ __( 'Link rel' ) }
