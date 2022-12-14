@@ -7,7 +7,7 @@ import {
 	__experimentalRegisterExperimentalCoreBlocks,
 } from '@wordpress/block-library';
 import { dispatch } from '@wordpress/data';
-import { render, unmountComponentAtNode } from '@wordpress/element';
+import { createRoot } from '@wordpress/element';
 import {
 	__experimentalFetchLinkSuggestions as fetchLinkSuggestions,
 	__experimentalFetchUrlData as fetchUrlData,
@@ -54,10 +54,6 @@ export function reinitializeEditor( target, settings ) {
 		}
 	);
 
-	// This will be a no-op if the target doesn't have any React nodes.
-	unmountComponentAtNode( target );
-	const reboot = reinitializeEditor.bind( null, target, settings );
-
 	// We dispatch actions and update the store synchronously before rendering
 	// so that we won't trigger unnecessary re-renders with useEffect.
 	{
@@ -92,7 +88,7 @@ export function reinitializeEditor( target, settings ) {
 	window.addEventListener( 'dragover', ( e ) => e.preventDefault(), false );
 	window.addEventListener( 'drop', ( e ) => e.preventDefault(), false );
 
-	render( <App reboot={ reboot } />, target );
+	createRoot( target ).render( <App /> );
 }
 
 /**
