@@ -50,8 +50,13 @@ const fontSizeStyles = ( { selectSize = 'default' }: SelectProps ) => {
 
 const sizeStyles = ( {
 	__next36pxDefaultSize,
+	multiple,
 	selectSize = 'default',
 }: SelectProps ) => {
+	if ( multiple ) {
+		return;
+	}
+
 	const sizes = {
 		default: {
 			height: 36,
@@ -91,6 +96,7 @@ export const chevronIconSize = 18;
 
 const sizePaddings = ( {
 	__next36pxDefaultSize,
+	multiple,
 	selectSize = 'default',
 }: SelectProps ) => {
 	const iconWidth = chevronIconSize;
@@ -117,7 +123,14 @@ const sizePaddings = ( {
 		};
 	}
 
-	return rtl( sizes[ selectSize ] || sizes.default );
+	const selectedSize = sizes[ selectSize ] || sizes.default;
+
+	if ( multiple ) {
+		selectedSize.paddingTop = selectedSize.paddingLeft;
+		selectedSize.paddingBottom = selectedSize.paddingLeft;
+	}
+
+	return rtl( selectedSize );
 };
 
 // TODO: Resolve need to use &&& to increase specificity
