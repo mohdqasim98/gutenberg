@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { get, filter, isEmpty, map, pick, includes } from 'lodash';
+import { get, isEmpty, map } from 'lodash';
 
 /**
  * WordPress dependencies
@@ -32,7 +32,13 @@ import {
 	__experimentalGetElementClassName,
 	__experimentalUseBorderProps as useBorderProps,
 } from '@wordpress/block-editor';
-import { useEffect, useMemo, useState, useRef } from '@wordpress/element';
+import {
+	useEffect,
+	useMemo,
+	useState,
+	useRef,
+	useCallback,
+} from '@wordpress/element';
 import { __, sprintf, isRTL } from '@wordpress/i18n';
 import { getFilename } from '@wordpress/url';
 import {
@@ -93,7 +99,6 @@ export default function Image( {
 		sizeSlug,
 	} = attributes;
 	const imageRef = useRef();
-	const captionRef = useRef();
 	const prevCaption = usePrevious( caption );
 	const [ showCaption, setShowCaption ] = useState( !! caption );
 	const { allowResize = true } = context;
@@ -130,12 +135,16 @@ export default function Image( {
 				} = select( blockEditorStore );
 
 				const rootClientId = getBlockRootClientId( clientId );
-				const settings = pick( getSettings(), [
-					'imageEditing',
-					'imageSizes',
-					'maxWidth',
-					'mediaUpload',
-				] );
+				const settings = Object.fromEntries(
+					Object.entries( getSettings() ).filter( ( [ key ] ) =>
+						[
+							'imageEditing',
+							'imageSizes',
+							'maxWidth',
+							'mediaUpload',
+						].includes( key )
+					)
+				);
 
 				return {
 					...settings,
@@ -151,7 +160,7 @@ export default function Image( {
 	const { createErrorNotice, createSuccessNotice } =
 		useDispatch( noticesStore );
 	const isLargeViewport = useViewportMatch( 'medium' );
-	const isWideAligned = includes( [ 'wide', 'full' ], align );
+	const isWideAligned = [ 'wide', 'full' ].includes( align );
 	const [
 		{ loadedNaturalWidth, loadedNaturalHeight },
 		setLoadedNaturalSize,
@@ -164,7 +173,7 @@ export default function Image( {
 		! isContentLocked &&
 		! ( isWideAligned && isLargeViewport );
 	const imageSizeOptions = map(
-		filter( imageSizes, ( { slug } ) =>
+		imageSizes.filter( ( { slug } ) =>
 			get( image, [ 'media_details', 'sizes', slug, 'source_url' ] )
 		),
 		( { name, slug } ) => ( { value: slug, label: name } )
@@ -195,11 +204,14 @@ export default function Image( {
 	}, [ caption, prevCaption ] );
 
 	// Focus the caption when we click to add one.
-	useEffect( () => {
-		if ( showCaption && ! caption ) {
-			captionRef.current?.focus();
-		}
-	}, [ caption, showCaption ] );
+	const captionRef = useCallback(
+		( node ) => {
+			if ( node && ! caption ) {
+				node.focus();
+			}
+		},
+		[ caption ]
+	);
 
 	// Get naturalWidth and naturalHeight from image ref, and fall back to loaded natural
 	// width and height. This resolves an issue in Safari where the loaded natural
@@ -343,7 +355,11 @@ export default function Image( {
 						} }
 						icon={ captionIcon }
 						isPressed={ showCaption }
-						label={ __( 'Caption' ) }
+						label={
+							showCaption
+								? __( 'Remove caption' )
+								: __( 'Add caption' )
+						}
 					/>
 				) }
 				{ ! multiImageSelection && ! isEditingImage && (
@@ -397,6 +413,7 @@ export default function Image( {
 				<PanelBody title={ __( 'Settings' ) }>
 					{ ! multiImageSelection && (
 						<TextareaControl
+							__nextHasNoMarginBottom
 							label={ __( 'Alt text (alternative text)' ) }
 							value={ alt }
 							onChange={ updateAlt }
@@ -595,6 +612,7 @@ export default function Image( {
 						height: parseInt( currentHeight + delta.height, 10 ),
 					} );
 				} }
+				resizeRatio={ align === 'center' ? 2 : 1 }
 			>
 				{ img }
 			</ResizableBox>
