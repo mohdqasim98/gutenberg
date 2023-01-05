@@ -6,7 +6,7 @@
 		height: calc(100% - #{ $header-height * 2 });
 	}
 	@include break-medium() {
-		width: 70%;
+		width: 50%;
 	}
 	@include break-large() {
 		height: fit-content;
@@ -32,6 +32,10 @@
 		.block-editor-block-preview__content {
 			width: 100%;
 			position: absolute;
+		}
+
+		.block-editor-block-patterns-list__item-title {
+			display: none;
 		}
 	}
 

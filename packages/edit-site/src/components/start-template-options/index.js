@@ -77,7 +77,6 @@ function PatternSelection( { fallbackContent, onChoosePattern, postType } ) {
 			<BlockPatternsList
 				blockPatterns={ blockPatterns }
 				shownPatterns={ shownBlockPatterns }
-				showTitlesAsTooltip
 				onClickPattern={ ( pattern, blocks ) => {
 					onChange( 'start-blank' === pattern.name ? [] : blocks, {
 						selection: undefined,
