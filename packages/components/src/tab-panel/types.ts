@@ -64,7 +64,7 @@ export type TabPanelProps = {
 	/**
 	 * The name of the tab to be selected.
 	 */
-	selectedTabName?: string;
+	tabName?: string;
 	/**
 	 * The function called when a tab has been selected.
 	 * It is passed the `tabName` as an argument.

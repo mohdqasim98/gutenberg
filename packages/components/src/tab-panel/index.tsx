@@ -6,7 +6,6 @@ import classnames from 'classnames';
 /**
  * WordPress dependencies
  */
-import { useState, useEffect, useCallback } from '@wordpress/element';
 import { useInstanceId } from '@wordpress/compose';
 
 /**
@@ -16,6 +15,7 @@ import { NavigableMenu } from '../navigable-container';
 import Button from '../button';
 import type { TabButtonProps, TabPanelProps } from './types';
 import type { WordPressComponentProps } from '../ui/context';
+import { useControlledValue } from '../utils';
 
 const TabButton = ( {
 	tabId,
@@ -77,21 +77,22 @@ export function TabPanel( {
 	tabs,
 	selectOnMove = true,
 	initialTabName,
-	selectedTabName,
+	tabName: tabNameProp,
 	orientation = 'horizontal',
 	activeClass = 'is-active',
 	onSelect,
 }: WordPressComponentProps< TabPanelProps, 'div', false > ) {
 	const instanceId = useInstanceId( TabPanel, 'tab-panel' );
-	const [ selected, setSelected ] = useState< string >();
 
-	const handleTabSelection = useCallback(
-		( tabKey: string ) => {
-			setSelected( tabKey );
-			onSelect?.( tabKey );
-		},
-		[ onSelect ]
-	);
+	const getTab = ( name: string | undefined ) =>
+		tabs.find( ( tab ) => tab.name === name && ! tab.disabled );
+	const firstEnabledTab = tabs.find( ( { disabled } ) => ! disabled );
+
+	const [ tabName, setTabName ] = useControlledValue( {
+		defaultValue: ( getTab( initialTabName ) || firstEnabledTab )?.name,
+		value: getTab( tabNameProp )?.name,
+		onChange: onSelect,
+	} );
 
 	// Simulate a click on the newly focused tab, which causes the component
 	// to show the `tab-panel` associated with the clicked tab.
@@ -101,39 +102,12 @@ export function TabPanel( {
 	) => {
 		child.click();
 	};
-	const selectedTab = tabs.find( ( { name } ) => name === selected );
+	const selectedTab = getTab( tabName ) || firstEnabledTab;
 	const selectedId = `${ instanceId }-${ selectedTab?.name ?? 'none' }`;
 
-	useEffect( () => {
-		const firstEnabledTab = tabs.find( ( tab ) => ! tab.disabled );
-		const initialTab = tabs.find( ( tab ) => tab.name === initialTabName );
-		if ( ! selectedTab?.name && firstEnabledTab ) {
-			handleTabSelection(
-				initialTab && ! initialTab.disabled
-					? initialTab.name
-					: firstEnabledTab.name
-			);
-		} else if ( selectedTab?.disabled && firstEnabledTab ) {
-			handleTabSelection( firstEnabledTab.name );
-		}
-	}, [
-		tabs,
-		selectedTab?.name,
-		selectedTab?.disabled,
-		initialTabName,
-		handleTabSelection,
-	] );
-
-	useEffect( () => {
-		if ( selectedTabName ) {
-			const isEnabled = tabs.find(
-				( tab ) => tab.name === selectedTabName && ! tab.disabled
-			);
-			if ( isEnabled ) {
-				setSelected( selectedTabName );
-			}
-		}
-	}, [ tabs, selectedTabName ] );
+	// useEffect( () => {
+	// 	setTabName( selectedTab?.name );
+	// }, [ selectedTab?.name ] );
 
 	return (
 		<div className={ className }>
@@ -151,14 +125,14 @@ export function TabPanel( {
 							'components-tab-panel__tabs-item',
 							tab.className,
 							{
-								[ activeClass ]: tab.name === selected,
+								[ activeClass ]: tab.name === selectedTab?.name,
 							}
 						) }
 						tabId={ `${ instanceId }-${ tab.name }` }
 						aria-controls={ `${ instanceId }-${ tab.name }-view` }
-						selected={ tab.name === selected }
+						selected={ tab.name === selectedTab?.name }
 						key={ tab.name }
-						onClick={ () => handleTabSelection( tab.name ) }
+						onClick={ () => setTabName( tab.name ) }
 						disabled={ tab.disabled }
 						label={ tab.icon && tab.title }
 						icon={ tab.icon }

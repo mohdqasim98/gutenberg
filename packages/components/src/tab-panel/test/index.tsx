@@ -93,19 +93,23 @@ describe( 'TabPanel', () => {
 		expect( mockOnSelect ).toHaveBeenLastCalledWith( 'alpha' );
 	} );
 
-	describe( 'prop: initialTabIndex', () => {
-		it( 'should render with a tab initially selected by prop initialTabIndex', () => {
+	describe( 'prop: initialTabName', () => {
+		it( 'should render with a tab initially selected by prop initialTabName', () => {
+			const mockOnSelect = jest.fn();
 			render(
 				<TabPanel
 					initialTabName="beta"
 					tabs={ TABS }
 					children={ () => undefined }
+					onSelect={ mockOnSelect }
 				/>
 			);
 			expect( getSelectedTab() ).toHaveTextContent( 'Beta' );
+			expect( mockOnSelect ).toHaveBeenLastCalledWith( 'beta' );
 		} );
 
-		it( 'should not render a different tab when initialTabIndex is changed', () => {
+		it( 'should not render a different tab when initialTabName is changed', () => {
+			const mockOnSelect = jest.fn();
 			const { rerender } = render(
 				<TabPanel
 					initialTabName="beta"
@@ -119,12 +123,14 @@ describe( 'TabPanel', () => {
 					initialTabName="alpha"
 					tabs={ TABS }
 					children={ () => undefined }
+					onSelect={ mockOnSelect }
 				/>
 			);
 			expect( getSelectedTab() ).toHaveTextContent( 'Beta' );
+			expect( mockOnSelect ).not.toHaveBeenCalled();
 		} );
 
-		it( 'should select `initialTabName` if defined', async () => {
+		it( 'should fallback to initial tab if active tab is removed', async () => {
 			const user = setupUser();
 			const mockOnSelect = jest.fn();
 
@@ -146,11 +152,11 @@ describe( 'TabPanel', () => {
 					onSelect={ mockOnSelect }
 				/>
 			);
-			expect( getSelectedTab() ).toHaveTextContent( 'Gamma' );
-			expect( mockOnSelect ).toHaveBeenLastCalledWith( 'gamma' );
+			expect( getSelectedTab() ).toHaveTextContent( 'Beta' );
+			expect( mockOnSelect ).toHaveBeenLastCalledWith( 'beta' );
 		} );
 
-		it( 'should select first tab if `initialTabName` not defined', async () => {
+		it( 'should fallback to first enabled tab if active tab is removed', async () => {
 			const user = setupUser();
 			const mockOnSelect = jest.fn();
 
@@ -175,31 +181,37 @@ describe( 'TabPanel', () => {
 		} );
 	} );
 
-	describe( 'prop: selectedTabName', () => {
-		it( 'should render with a tab selected by prop selectedTabName', () => {
+	describe( 'prop: tabName', () => {
+		it( 'should render with a tab selected by prop tabName', () => {
+			const mockOnSelect = jest.fn();
 			render(
 				<TabPanel
-					selectedTabName="beta"
+					tabName="beta"
 					tabs={ TABS }
 					children={ () => undefined }
+					onSelect={ mockOnSelect }
 				/>
 			);
 			expect( getSelectedTab() ).toHaveTextContent( 'Beta' );
+			expect( mockOnSelect ).toHaveBeenCalledWith( 'beta' );
 		} );
 
-		it( 'should override initialTabName when selectedTabName is set', () => {
+		it( 'should override initialTabName when tabName is set', () => {
+			const mockOnSelect = jest.fn();
 			render(
 				<TabPanel
 					initialTabName="gamma"
-					selectedTabName="beta"
+					tabName="beta"
 					tabs={ TABS }
 					children={ () => undefined }
+					onSelect={ mockOnSelect }
 				/>
 			);
 			expect( getSelectedTab() ).toHaveTextContent( 'Beta' );
+			expect( mockOnSelect ).toHaveBeenCalledWith( 'beta' );
 		} );
 
-		it( 'should re-render with a tab selected by prop selectedTabName', async () => {
+		it( 'should re-render with a tab selected by prop tabName, when initialTabName not set', async () => {
 			const mockOnSelect = jest.fn();
 			const { rerender } = render(
 				<TabPanel tabs={ TABS } children={ () => undefined } />
@@ -207,7 +219,7 @@ describe( 'TabPanel', () => {
 
 			rerender(
 				<TabPanel
-					selectedTabName="beta"
+					tabName="beta"
 					tabs={ TABS }
 					children={ () => undefined }
 					onSelect={ mockOnSelect }
@@ -215,24 +227,71 @@ describe( 'TabPanel', () => {
 			);
 
 			expect( getSelectedTab() ).toHaveTextContent( 'Beta' );
-			expect( mockOnSelect ).not.toHaveBeenCalled();
+			expect( mockOnSelect ).toHaveBeenCalledWith( 'beta' );
 		} );
 
-		it( 'should skip tab selection by selectedTabName when it is disabled', () => {
-			const selectedTabName = 'beta';
+		it( 'should re-render with a tab selected by prop tabName, when initialTabName is set', () => {
+			const mockOnSelect = jest.fn();
+			const { rerender } = render(
+				<TabPanel
+					initialTabName="beta"
+					tabs={ TABS }
+					children={ () => undefined }
+				/>
+			);
+
+			rerender(
+				<TabPanel
+					tabName="gamma"
+					tabs={ TABS }
+					children={ () => undefined }
+					onSelect={ mockOnSelect }
+				/>
+			);
+
+			expect( getSelectedTab() ).toHaveTextContent( 'Gamma' );
+			expect( mockOnSelect ).toHaveBeenCalledWith( 'gamma' );
+		} );
+
+		it( 'should fallback to first enabled tab, when active tab is removed', () => {
+			const mockOnSelect = jest.fn();
+			const { rerender } = render(
+				<TabPanel
+					tabName="beta"
+					tabs={ TABS }
+					children={ () => undefined }
+				/>
+			);
+
+			rerender(
+				<TabPanel
+					tabs={ TABS.slice( 2 ) /* remove alpha, beta */ }
+					children={ () => undefined }
+					onSelect={ mockOnSelect }
+				/>
+			);
+			expect( getSelectedTab() ).toHaveTextContent( 'Gamma' );
+			expect( mockOnSelect ).toHaveBeenLastCalledWith( 'gamma' );
+		} );
+
+		it( 'should skip tab selection by tabName when it is disabled', () => {
+			const mockOnSelect = jest.fn();
+			const tabName = 'beta';
 			const TABS_DISABLED = TABS.map( ( tab ) => ( {
 				...tab,
-				disabled: tab.name === selectedTabName,
+				disabled: tab.name === tabName,
 			} ) );
 
 			render(
 				<TabPanel
-					selectedTabName={ selectedTabName }
+					tabName={ tabName }
 					tabs={ TABS_DISABLED }
 					children={ () => undefined }
+					onSelect={ mockOnSelect }
 				/>
 			);
 			expect( getSelectedTab() ).toHaveTextContent( 'Alpha' );
+			expect( mockOnSelect ).toHaveBeenCalledWith( 'alpha' );
 		} );
 	} );
 
