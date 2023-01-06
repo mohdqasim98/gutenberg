@@ -519,6 +519,7 @@ function TableEdit( {
 			) }
 			{ ! isEmpty && (
 				<RichText
+					identifier="caption"
 					tagName="figcaption"
 					className={ __experimentalGetElementClassName( 'caption' ) }
 					aria-label={ __( 'Table caption text' ) }

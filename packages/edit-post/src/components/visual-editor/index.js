@@ -20,7 +20,6 @@ import {
 	__unstableUseTypewriter as useTypewriter,
 	__unstableUseClipboardHandler as useClipboardHandler,
 	__unstableUseTypingObserver as useTypingObserver,
-	__unstableBlockSettingsMenuFirstItem,
 	__experimentalUseResizeCanvas as useResizeCanvas,
 	__unstableEditorStyles as EditorStyles,
 	useSetting,
@@ -43,7 +42,6 @@ import { store as coreStore } from '@wordpress/core-data';
 /**
  * Internal dependencies
  */
-import BlockInspectorButton from './block-inspector-button';
 import { store as editPostStore } from '../../store';
 
 function MaybeIframe( {
@@ -305,6 +303,21 @@ export default function VisualEditor( { styles } ) {
 		titleRef?.current?.focus();
 	}, [ isWelcomeGuideVisible, isCleanNewPost ] );
 
+	styles = useMemo(
+		() => [
+			...styles,
+			{
+				// We should move this in to future to the body.
+				css:
+					`.edit-post-visual-editor__post-title-wrapper{margin-top:4rem}` +
+					( paddingBottom
+						? `body{padding-bottom:${ paddingBottom }}`
+						: '' ),
+			},
+		],
+		[ styles ]
+	);
+
 	return (
 		<BlockTools
 			__unstableContentRef={ ref }
@@ -347,7 +360,6 @@ export default function VisualEditor( { styles } ) {
 						contentRef={ contentRef }
 						styles={ styles }
 						assets={ assets }
-						style={ { paddingBottom } }
 					>
 						{ themeSupportsLayout &&
 							! themeHasDisabledLayoutStyles &&
@@ -374,10 +386,15 @@ export default function VisualEditor( { styles } ) {
 						{ ! isTemplateMode && (
 							<div
 								className={ classnames(
+									// This wrapper div should have the same
+									// classes as the block list beneath.
+									'is-root-container',
+									'block-editor-block-list__layout',
 									'edit-post-visual-editor__post-title-wrapper',
 									{
 										'is-focus-mode': isFocusMode,
-									}
+									},
+									blockListLayoutClass
 								) }
 								contentEditable={ false }
 							>
@@ -400,11 +417,6 @@ export default function VisualEditor( { styles } ) {
 					</MaybeIframe>
 				</motion.div>
 			</motion.div>
-			<__unstableBlockSettingsMenuFirstItem>
-				{ ( { onClose } ) => (
-					<BlockInspectorButton onClick={ onClose } />
-				) }
-			</__unstableBlockSettingsMenuFirstItem>
 		</BlockTools>
 	);
 }
