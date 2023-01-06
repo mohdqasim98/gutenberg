@@ -57,6 +57,7 @@ function PatternSelection( { fallbackContent, onChoosePattern, postType } ) {
 		[ fallbackContent ]
 	);
 	const shownBlockPatterns = useAsyncList( blockPatterns );
+	// When the width changes update the height so we keep the 3x4 proporsions.
 	useEffect( () => {
 		const elementOffSetWidth = window?.document?.querySelector(
 			'.edit-site-start-template-options__pattern-container .block-editor-block-patterns-list__list-item'
@@ -64,7 +65,7 @@ function PatternSelection( { fallbackContent, onChoosePattern, postType } ) {
 		if ( elementOffSetWidth ) {
 			setGridHeight( `${ ( elementOffSetWidth * 4 ) / 3 }px` );
 		}
-	}, [ blockPatterns, sizes.width ] );
+	}, [ shownBlockPatterns, sizes.width ] );
 	return (
 		<div
 			className="edit-site-start-template-options__pattern-container"

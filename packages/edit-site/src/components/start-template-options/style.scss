@@ -17,16 +17,17 @@
 	display: grid;
 	width: 100%;
 	margin-top: $grid-unit-05;
-	gap: $grid-unit-10;
+	gap: $grid-unit-30;
 	grid-template-columns: repeat(auto-fit, minmax(min(100%/2, max(240px, 100%/10)), 1fr));
 	grid-auto-rows: var(--wp-edit-site-start-template-options-grid-height);
 	.block-editor-block-patterns-list__list-item {
 		break-inside: avoid-column;
-		margin-bottom: $grid-unit-30;
+		margin-bottom: 0;
 		width: 100%;
 
 		.block-editor-block-preview__container {
 			height: 100%;
+			box-shadow: 0 0 0 1px $gray-300;
 		}
 
 		.block-editor-block-preview__content {
@@ -36,6 +37,21 @@
 
 		.block-editor-block-patterns-list__item-title {
 			display: none;
+		}
+
+		&:hover {
+			.block-editor-block-preview__container {
+				box-shadow: 0 0 0 2px var(--wp-admin-theme-color);
+			}
+		}
+
+		&:focus {
+			.block-editor-block-preview__container {
+				box-shadow: inset 0 0 0 1px $white, 0 0 0 var(--wp-admin-border-width-focus) var(--wp-admin-theme-color);
+
+				// Windows High Contrast mode will show this outline, but not the box-shadow.
+				outline: 2px solid transparent;
+			}
 		}
 	}
 

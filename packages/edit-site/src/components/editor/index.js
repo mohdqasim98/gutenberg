@@ -167,7 +167,7 @@ export default function Editor() {
 					<GlobalStylesProvider>
 						<BlockContextProvider value={ blockContext }>
 							<SidebarComplementaryAreaFills />
-							<StartTemplateOptions />
+							{ isEditMode && <StartTemplateOptions /> }
 							<InterfaceSkeleton
 								enableRegionNavigation={ false }
 								className={
