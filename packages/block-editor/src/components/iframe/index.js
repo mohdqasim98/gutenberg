@@ -107,6 +107,7 @@ function Iframe( {
 	tabIndex = 0,
 	scale = 1,
 	frameSize = 0,
+	expand = false,
 	readonly,
 	forwardedRef: ref,
 	...props
@@ -244,6 +245,20 @@ function Iframe( {
 			{ tabIndex >= 0 && before }
 			<iframe
 				{ ...props }
+				style={ {
+					...props.style,
+					height: expand ? contentHeight : props.style?.height,
+					marginTop: scale
+						? -( ( contentHeight * ( 1 - scale ) ) / 2 ) + frameSize
+						: props.style?.marginTop,
+					marginBottom: scale
+						? -( ( contentHeight * ( 1 - scale ) ) / 2 ) + frameSize
+						: props.style?.marginBottom,
+					transform: scale
+						? `scale( ${ scale } )`
+						: props.style?.transform,
+					transition: 'all .3s',
+				} }
 				ref={ useMergeRefs( [ ref, setRef ] ) }
 				tabIndex={ tabIndex }
 				// Correct doctype is required to enable rendering in standards
@@ -258,13 +273,6 @@ function Iframe( {
 							<head ref={ headRef }>
 								{ styleAssets }
 								{ head }
-								<style>
-									{ `html { transition: background 5s; ${
-										frameSize
-											? 'background: #2f2f2f; transition: background 0s;'
-											: ''
-									} }` }
-								</style>
 							</head>
 							<body
 								ref={ bodyRef }
@@ -273,17 +281,6 @@ function Iframe( {
 									'editor-styles-wrapper',
 									...bodyClasses
 								) }
-								style={ {
-									// This is the remaining percentage from the scaling down
-									// of the iframe body(`scale(0.45)`). We also need to subtract
-									// the body's bottom margin.
-									marginBottom: `-${
-										contentHeight * ( 1 - scale ) -
-										frameSize
-									}px`,
-									marginTop: frameSize,
-									transform: `scale( ${ scale } )`,
-								} }
 								inert={ readonly ? 'true' : undefined }
 							>
 								{ contentResizeListener }

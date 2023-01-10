@@ -30,6 +30,7 @@ function EditorCanvas( { enableResizing, settings, children, ...props } ) {
 	const mouseMoveTypingRef = useMouseMoveTypingReset();
 	return (
 		<Iframe
+			expand={ isZoomOutMode }
 			scale={ ( isZoomOutMode && 0.45 ) || undefined }
 			frameSize={ isZoomOutMode ? 100 : undefined }
 			style={ enableResizing ? {} : deviceStyles }
