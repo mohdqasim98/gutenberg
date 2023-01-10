@@ -61,7 +61,7 @@ const ExperimentMainContent = ( {
 				__( 'Navigation menu: %s' ),
 				navigationMenu.title
 		  )
-		: __( 'No navigation menu selected, displaying Page List' );
+		: __( 'You have not yet created any menus. Displaying a list of your Pages' );
 	return (
 		<OffCanvasEditor
 			blocks={ clientIdsTree }
