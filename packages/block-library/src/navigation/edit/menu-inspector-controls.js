@@ -13,7 +13,7 @@ import {
 	Spinner,
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -22,6 +22,7 @@ import ManageMenusButton from './manage-menus-button';
 import NavigationMenuSelector from './navigation-menu-selector';
 import { LeafMoreMenu } from '../leaf-more-menu';
 import { unlock } from '../../experiments';
+import useNavigationMenu from '../use-navigation-menu';
 
 /* translators: %s: The name of a menu. */
 const actionLabel = __( "Switch to '%s'" );
@@ -44,6 +45,7 @@ const ExperimentMainContent = ( {
 		},
 		[ clientId ]
 	);
+	const { navigationMenu } = useNavigationMenu( currentMenuId );
 
 	if ( currentMenuId && isNavigationMenuMissing ) {
 		return <p>{ __( 'Select or create a menu' ) }</p>;
@@ -53,12 +55,20 @@ const ExperimentMainContent = ( {
 		return <Spinner />;
 	}
 
+	const label = navigationMenu
+		? sprintf(
+				/* translators: %s: The name of a menu. */
+				__( 'Navigation menu: %s' ),
+				navigationMenu.title
+		  )
+		: __( 'No navigation menu selected, displaying Page List' );
 	return (
 		<OffCanvasEditor
 			blocks={ clientIdsTree }
 			isExpanded={ true }
 			selectBlockInCanvas={ false }
 			LeafMoreMenu={ LeafMoreMenu }
+			label={ label }
 		/>
 	);
 };
