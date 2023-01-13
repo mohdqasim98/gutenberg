@@ -18,6 +18,7 @@ import { __ } from '@wordpress/i18n';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 import { store as coreStore } from '@wordpress/core-data';
 import { forwardRef } from '@wordpress/element';
+import { pencil } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -27,6 +28,7 @@ import { useLocation } from '../routes';
 import getIsListPage from '../../utils/get-is-list-page';
 import SiteIcon from '../site-icon';
 import useEditedEntityRecord from '../use-edited-entity-record';
+import SaveButton from '../save-button';
 
 const HUB_ANIMATION_DURATION = 0.3;
 
@@ -133,16 +135,17 @@ const SiteHub = forwardRef(
 				</HStack>
 
 				{ showEditButton && (
-					<Button
-						className="edit-site-site-hub__edit-button"
-						label={ __( 'Open the editor' ) }
-						onClick={ () => {
-							__unstableSetCanvasMode( 'edit' );
-						} }
-						variant="primary"
-					>
-						{ __( 'Edit' ) }
-					</Button>
+					<>
+						<Button
+							className="edit-site-site-hub__edit-button"
+							label={ __( 'Open the editor' ) }
+							onClick={ () => {
+								__unstableSetCanvasMode( 'edit' );
+							} }
+							icon={ pencil }
+						/>
+						<SaveButton />
+					</>
 				) }
 
 				{ isMobileViewport && ! isMobileCanvasVisible && (
