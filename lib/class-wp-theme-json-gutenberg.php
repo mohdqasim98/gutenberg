@@ -828,22 +828,21 @@ class WP_Theme_JSON_Gutenberg {
 		}
 
 		foreach ( $blocks as $block_name => $block_type ) {
-			$root_selector = static::get_root_block_selector( $block_type );
+			$root_selector = wp_get_block_css_selector( $block_type );
 
 			static::$blocks_metadata[ $block_name ]['selector']  = $root_selector;
 			static::$blocks_metadata[ $block_name ]['selectors'] = static::get_block_selectors( $block_type, $root_selector );
 
 			$elements = static::get_block_element_selectors( $root_selector );
-
 			if ( ! empty( $elements ) ) {
 				static::$blocks_metadata[ $block_name ]['elements'] = $elements;
 			}
 
-			if (
-				isset( $block_type->supports['color']['__experimentalDuotone'] ) &&
-				is_string( $block_type->supports['color']['__experimentalDuotone'] )
-			) {
-				static::$blocks_metadata[ $block_name ]['duotone'] = $block_type->supports['color']['__experimentalDuotone'];
+			// The block may or may not have a duotone selector.
+			// TODO: Should this target be `color.duotone` not `duotone`?
+			$duotone_selector = wp_get_block_css_selector( $block_type, 'duotone' );
+			if ( null !== $duotone_selector ) {
+				static::$blocks_metadata[ $block_name ]['duotone'] = $duotone_selector;
 			}
 
 			// If the block has style variations, append their selectors to the block metadata.
@@ -3362,16 +3361,9 @@ class WP_Theme_JSON_Gutenberg {
 
 		$selectors = array( 'root' => $root_selector );
 		foreach ( static::BLOCK_SUPPORT_FEATURE_LEVEL_SELECTORS as $key => $feature ) {
-			if (
-				isset( $block_type->supports[ $key ]['__experimentalSelector'] ) &&
-				$block_type->supports[ $key ]['__experimentalSelector']
-			) {
-				$selectors[ $feature ] = array(
-					'root' => static::scope_selector(
-						$root_selector,
-						$block_type->supports[ $key ]['__experimentalSelector']
-					),
-				);
+			$feature_selector = wp_get_block_css_selector( $block_type, $key );
+			if ( null !== $feature_selector ) {
+				$selectors[ $feature ] = array( 'root' => $feature_selector );
 			}
 		}
 
