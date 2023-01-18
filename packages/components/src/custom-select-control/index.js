@@ -21,6 +21,7 @@ import { Select as SelectControlSelect } from '../select-control/styles/select-c
 import SelectControlChevronDown from '../select-control/chevron-down';
 import { InputBaseWithBackCompatMinWidth } from './styles';
 import { StyledLabel } from '../base-control/styles/base-control-styles';
+import { lock } from '../experiments';
 
 const itemToString = ( item ) => item?.name;
 // This is needed so that in Windows, where
@@ -62,7 +63,7 @@ const stateReducer = (
 	}
 };
 
-export default function CustomSelectControl( props ) {
+export function ExperimentalCustomSelectControl( props ) {
 	const {
 		/** Start opting into the larger default height that will become the default size in a future version. */
 		__next36pxDefaultSize = false,
@@ -257,3 +258,16 @@ export default function CustomSelectControl( props ) {
 		</div>
 	);
 }
+
+function CustomSelectControl( props ) {
+	return (
+		<ExperimentalCustomSelectControl
+			{ ...props }
+			__experimentalShowSelectedHint={ false }
+		/>
+	);
+}
+
+lock( CustomSelectControl, ExperimentalCustomSelectControl );
+
+export default CustomSelectControl;

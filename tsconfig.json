@@ -20,6 +20,7 @@
 		{ "path": "packages/e2e-test-utils-playwright" },
 		{ "path": "packages/escape-html" },
 		{ "path": "packages/eslint-plugin" },
+		{ "path": "packages/experiments" },
 		{ "path": "packages/html-entities" },
 		{ "path": "packages/hooks" },
 		{ "path": "packages/i18n" },

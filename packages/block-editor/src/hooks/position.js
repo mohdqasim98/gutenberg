@@ -25,6 +25,9 @@ import BlockList from '../components/block-list';
 import useSetting from '../components/use-setting';
 import InspectorControls from '../components/inspector-controls';
 import { cleanEmptyObject } from './utils';
+import { unlock } from '../experiments';
+
+const ExperimentalCustomSelectControl = unlock( CustomSelectControl );
 
 const POSITION_SUPPORT_KEY = 'position';
 
@@ -255,7 +258,7 @@ export function PositionEdit( props ) {
 		web: (
 			<>
 				<BaseControl className="block-editor-hooks__position-selection">
-					<CustomSelectControl
+					<ExperimentalCustomSelectControl
 						__nextUnconstrainedWidth
 						__next36pxDefaultSize
 						className="block-editor-hooks__position-selection__select-control"

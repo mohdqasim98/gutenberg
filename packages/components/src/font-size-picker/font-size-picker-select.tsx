@@ -13,6 +13,9 @@ import type {
 	FontSizePickerSelectOption,
 } from './types';
 import { getCommonSizeUnit, isSimpleCssValue } from './utils';
+import { unlock } from '../experiments';
+
+const ExperimentalCustomSelectControl = unlock( CustomSelectControl );
 
 const DEFAULT_OPTION: FontSizePickerSelectOption = {
 	key: 'default',
@@ -66,7 +69,7 @@ const FontSizePickerSelect = ( props: FontSizePickerSelectProps ) => {
 		: DEFAULT_OPTION;
 
 	return (
-		<CustomSelectControl
+		<ExperimentalCustomSelectControl
 			__nextUnconstrainedWidth
 			className="components-font-size-picker__select"
 			label={ __( 'Font size' ) }

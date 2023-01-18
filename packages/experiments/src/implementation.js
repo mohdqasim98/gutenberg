@@ -10,9 +10,10 @@
  * The list of core modules allowed to opt-in to the experimental APIs.
  */
 const CORE_MODULES_USING_EXPERIMENTS = [
-	'@wordpress/data',
-	'@wordpress/blocks',
 	'@wordpress/block-editor',
+	'@wordpress/blocks',
+	'@wordpress/components',
+	'@wordpress/data',
 ];
 
 /**
@@ -38,6 +39,14 @@ const registeredExperiments = [];
 const requiredConsent =
 	'I know using unstable features means my plugin or theme will inevitably break on the next WordPress release.';
 
+/**
+ * Called by a @wordpress package wishing to opt-in to accessing or exposing
+ * private experimental APIs.
+ *
+ * @param {string} consent    The consent string.
+ * @param {string} moduleName The name of the module that is opting in.
+ * @return {{lock: Function, unlock: Function}} An object containing the lock and unlock functions.
+ */
 export const __dangerousOptInToUnstableAPIsOnlyForCoreModules = (
 	consent,
 	moduleName
@@ -51,15 +60,15 @@ export const __dangerousOptInToUnstableAPIsOnlyForCoreModules = (
 				'your product will inevitably break on one of the next WordPress releases.'
 		);
 	}
-	if ( registeredExperiments.includes( moduleName ) ) {
-		throw new Error(
-			`You tried to opt-in to unstable APIs as module "${ moduleName }" which is already registered. ` +
-				'This feature is only for JavaScript modules shipped with WordPress core. ' +
-				'Please do not use it in plugins and themes as the unstable APIs will be removed ' +
-				'without a warning. If you ignore this error and depend on unstable features, ' +
-				'your product will inevitably break on one of the next WordPress releases.'
-		);
-	}
+	// if ( registeredExperiments.includes( moduleName ) ) {
+	// 	throw new Error(
+	// 		`You tried to opt-in to unstable APIs as module "${ moduleName }" which is already registered. ` +
+	// 			'This feature is only for JavaScript modules shipped with WordPress core. ' +
+	// 			'Please do not use it in plugins and themes as the unstable APIs will be removed ' +
+	// 			'without a warning. If you ignore this error and depend on unstable features, ' +
+	// 			'your product will inevitably break on one of the next WordPress releases.'
+	// 	);
+	// }
 	if ( consent !== requiredConsent ) {
 		throw new Error(
 			`You tried to opt-in to unstable APIs without confirming you know the consequences. ` +
