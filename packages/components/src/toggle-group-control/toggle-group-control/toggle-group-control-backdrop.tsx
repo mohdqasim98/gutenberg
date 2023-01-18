@@ -1,6 +1,7 @@
 /**
  * WordPress dependencies
  */
+import { usePrevious } from '@wordpress/compose';
 import { useState, useEffect, memo } from '@wordpress/element';
 
 /**
@@ -19,6 +20,7 @@ function ToggleGroupControlBackdrop( {
 	const [ width, setWidth ] = useState( 0 );
 	const [ canAnimate, setCanAnimate ] = useState( false );
 	const [ renderBackdrop, setRenderBackdrop ] = useState( false );
+	const previousRenderBackdrop = usePrevious( renderBackdrop );
 
 	useEffect( () => {
 		const containerNode = containerRef?.current;
@@ -54,7 +56,8 @@ function ToggleGroupControlBackdrop( {
 		const dimensionsRequestId = window.setTimeout( computeDimensions, 100 );
 
 		let animationRequestId: number;
-		if ( ! canAnimate ) {
+		// Only start animating after the backdrop has already been rendered.
+		if ( ! canAnimate && previousRenderBackdrop ) {
 			animationRequestId = window.requestAnimationFrame( () => {
 				setCanAnimate( true );
 			} );
@@ -63,7 +66,14 @@ function ToggleGroupControlBackdrop( {
 			window.clearTimeout( dimensionsRequestId );
 			window.cancelAnimationFrame( animationRequestId );
 		};
-	}, [ canAnimate, containerRef, containerWidth, state, isAdaptiveWidth ] );
+	}, [
+		canAnimate,
+		containerRef,
+		containerWidth,
+		state,
+		isAdaptiveWidth,
+		previousRenderBackdrop,
+	] );
 
 	if ( ! renderBackdrop ) {
 		return null;
