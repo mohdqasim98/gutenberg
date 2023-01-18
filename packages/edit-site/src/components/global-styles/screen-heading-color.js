@@ -124,6 +124,7 @@ function ScreenHeadingColor( { name, variationPath = '' } ) {
 				<h4>{ __( 'Select heading level' ) }</h4>
 
 				<ToggleGroupControl
+					__nextHasNoMarginBottom
 					label={ __( 'Select heading level' ) }
 					hideLabelFromVision={ true }
 					value={ selectedLevel }
