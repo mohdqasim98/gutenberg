@@ -43,8 +43,9 @@ const Template: ComponentStory< typeof ToggleGroupControl > = ( {
 	onChange,
 	...props
 } ) => {
-	const [ value, setValue ] =
-		useState< ToggleGroupControlProps[ 'value' ] >();
+	const [ value, setValue ] = useState< ToggleGroupControlProps[ 'value' ] >(
+		props.value
+	);
 
 	return (
 		<ToggleGroupControl
@@ -83,6 +84,7 @@ Default.args = {
 	].map( mapPropsToOptionComponent ),
 	isBlock: true,
 	label: 'Label',
+	value: 'center',
 };
 
 /**
