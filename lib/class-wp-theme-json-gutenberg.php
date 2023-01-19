@@ -114,9 +114,19 @@ class WP_Theme_JSON_Gutenberg {
 	 *              `use_default_names` preset key, and simplified the metadata structure.
 	 * @since 6.0.0 Replaced `override` with `prevent_override` and updated the
 	 *              `prevent_override` value for `color.duotone` to use `color.defaultDuotone`.
+	 * @since 6.2.0 Added `shadow` and `aspectRatios`.
 	 * @var array
 	 */
 	const PRESETS_METADATA = array(
+		array(
+			'path'              => array( 'dimensions', 'aspectRatios' ),
+			'prevent_override'  => array( 'dimensions', 'defaultAspectRatios' ),
+			'use_default_names' => false,
+			'value_key'         => 'ratio',
+			'css_vars'          => '--wp--preset--aspectRatio--$slug',
+			'classes'           => array(),
+			'properties'        => array( 'aspect-ratio' ),
+		),
 		array(
 			'path'              => array( 'shadow', 'palette' ),
 			'prevent_override'  => array( 'shadow', 'defaultPalette' ),
@@ -362,6 +372,7 @@ class WP_Theme_JSON_Gutenberg {
 		),
 		'custom'                        => null,
 		'dimensions'                    => array(
+			'aspectRatios' => null,
 			'minHeight' => null,
 		),
 		'layout'                        => array(
@@ -407,7 +418,7 @@ class WP_Theme_JSON_Gutenberg {
 	 * @since 6.1.0 Added new side properties for `border`,
 	 *              added new property `shadow`,
 	 *              updated `blockGap` to be allowed at any level.
-	 * @since 6.2.0 Added `dimensions.minHeight`.
+	 * @since 6.2.0 Added `dimensions.minHeight` and `dimensions.aspectRatio`.
 	 * @var array
 	 */
 	const VALID_STYLES = array(
@@ -428,6 +439,7 @@ class WP_Theme_JSON_Gutenberg {
 		),
 		'css'        => null,
 		'dimensions' => array(
+			'aspectRatio' => null,
 			'minHeight' => null,
 		),
 		'filter'     => array(
