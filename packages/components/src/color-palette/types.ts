@@ -6,7 +6,6 @@ import type { CSSProperties, ReactNode } from 'react';
 /**
  * Internal dependencies
  */
-import type { PopoverProps } from '../popover/types';
 import type { HeadingSize } from '../heading/types';
 import type { DropdownProps } from '../dropdown/types';
 
