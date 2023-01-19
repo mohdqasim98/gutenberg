@@ -133,6 +133,8 @@ function Layout( { styles } ) {
 		'has-metaboxes': hasActiveMetaboxes,
 		'show-icon-labels': showIconLabels,
 		'is-distraction-free': isDistractionFree,
+		'is-inserter-opened': isInserterOpened,
+		'is-list-view-opened': isListViewOpened,
 	} );
 	const openSidebarPanel = () =>
 		openGeneralSidebar(
