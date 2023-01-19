@@ -22,7 +22,7 @@ function ScreenCSS() {
 			/>
 			<div className="edit-site-global-styles-screen-css">
 				<VStack spacing={ 3 }>
-					<Subtitle>{ __( 'ADDITIONAL CSS' ) }</Subtitle>
+					<Subtitle level={ 3 }>{ __( 'ADDITIONAL CSS' ) }</Subtitle>
 					<CustomCSSControl />
 				</VStack>
 			</div>
