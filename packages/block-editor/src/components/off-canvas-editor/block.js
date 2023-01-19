@@ -33,6 +33,7 @@ import {
 } from '../block-mover/button';
 import ListViewBlockContents from './block-contents';
 import BlockSettingsDropdown from '../block-settings-menu/block-settings-dropdown';
+import BlockEditButton from './block-edit-button';
 import { useListViewContext } from './context';
 import { getBlockPositionDescription } from './utils';
 import { store as blockEditorStore } from '../../store';
@@ -40,7 +41,7 @@ import useBlockDisplayInformation from '../use-block-display-information';
 import { useBlockLock } from '../block-lock';
 
 function ListViewBlock( {
-	block,
+	block: { clientId },
 	isDragged,
 	isSelected,
 	isBranchSelected,
@@ -58,7 +59,6 @@ function ListViewBlock( {
 } ) {
 	const cellRef = useRef( null );
 	const [ isHovered, setIsHovered ] = useState( false );
-	const { clientId } = block;
 
 	const { isLocked, isContentLocked } = useBlockLock( clientId );
 	const forceSelectionContentLock = useSelect(
@@ -88,62 +88,9 @@ function ListViewBlock( {
 	const { toggleBlockHighlight } = useDispatch( blockEditorStore );
 
 	const blockInformation = useBlockDisplayInformation( clientId );
-	const blockName = useSelect(
-		( select ) => select( blockEditorStore ).getBlockName( clientId ),
+	const block = useSelect(
+		( select ) => select( blockEditorStore ).getBlock( clientId ),
 		[ clientId ]
-	);
-
-	// When a block hides its toolbar it also hides the block settings menu,
-	// since that menu is part of the toolbar in the editor canvas.
-	// List View respects this by also hiding the block settings menu.
-	const showBlockActions = hasBlockSupport(
-		blockName,
-		'__experimentalToolbar',
-		true
-	);
-	const instanceId = useInstanceId( ListViewBlock );
-	const descriptionId = `list-view-block-select-button__${ instanceId }`;
-	const blockPositionDescription = getBlockPositionDescription(
-		position,
-		siblingBlockCount,
-		level
-	);
-
-	let blockAriaLabel = __( 'Link' );
-	if ( blockInformation ) {
-		blockAriaLabel = isLocked
-			? sprintf(
-					// translators: %s: The title of the block. This string indicates a link to select the locked block.
-					__( '%s link (locked)' ),
-					blockInformation.title
-			  )
-			: sprintf(
-					// translators: %s: The title of the block. This string indicates a link to select the block.
-					__( '%s link' ),
-					blockInformation.title
-			  );
-	}
-
-	const settingsAriaLabel = blockInformation
-		? sprintf(
-				// translators: %s: The title of the block.
-				__( 'Options for %s block' ),
-				blockInformation.title
-		  )
-		: __( 'Options' );
-
-	const { isTreeGridMounted, expand, collapse } = useListViewContext();
-
-	const hasSiblings = siblingBlockCount > 0;
-	const hasRenderedMovers = showBlockMovers && hasSiblings;
-	const moverCellClassName = classnames(
-		'block-editor-list-view-block__mover-cell',
-		{ 'is-visible': isHovered || isSelected }
-	);
-
-	const listViewBlockSettingsClassName = classnames(
-		'block-editor-list-view-block__menu-cell',
-		{ 'is-visible': isHovered || isFirstSelectedBlock }
 	);
 
 	// If ListView has experimental features related to the Persistent List View,
@@ -179,6 +126,9 @@ function ListViewBlock( {
 		[ selectBlock ]
 	);
 
+	const { isTreeGridMounted, expand, collapse, LeafMoreMenu } =
+		useListViewContext();
+
 	const toggleExpanded = useCallback(
 		( event ) => {
 			// Prevent shift+click from opening link in a new window when toggling.
@@ -191,6 +141,75 @@ function ListViewBlock( {
 			}
 		},
 		[ clientId, expand, collapse, isExpanded ]
+	);
+
+	const instanceId = useInstanceId( ListViewBlock );
+
+	if ( ! block ) {
+		return null;
+	}
+
+	// When a block hides its toolbar it also hides the block settings menu,
+	// since that menu is part of the toolbar in the editor canvas.
+	// List View respects this by also hiding the block settings menu.
+	const showBlockActions =
+		!! block &&
+		hasBlockSupport( block.name, '__experimentalToolbar', true );
+
+	const descriptionId = `list-view-block-select-button__${ instanceId }`;
+	const blockPositionDescription = getBlockPositionDescription(
+		position,
+		siblingBlockCount,
+		level
+	);
+
+	let blockAriaLabel = __( 'Link' );
+	if ( blockInformation ) {
+		blockAriaLabel = isLocked
+			? sprintf(
+					// translators: %s: The title of the block. This string indicates a link to select the locked block.
+					__( '%s link (locked)' ),
+					blockInformation.title
+			  )
+			: sprintf(
+					// translators: %s: The title of the block. This string indicates a link to select the block.
+					__( '%s link' ),
+					blockInformation.title
+			  );
+	}
+
+	const settingsAriaLabel = blockInformation
+		? sprintf(
+				// translators: %s: The title of the block.
+				__( 'Options for %s block' ),
+				blockInformation.title
+		  )
+		: __( 'Options' );
+
+	const editAriaLabel = blockInformation
+		? sprintf(
+				// translators: %s: The title of the block.
+				__( 'Edit %s block' ),
+				blockInformation.title
+		  )
+		: __( 'Edit' );
+
+	const isEditable = !! block && block.name !== 'core/page-list-item';
+	const hasSiblings = siblingBlockCount > 0;
+	const hasRenderedMovers = showBlockMovers && hasSiblings;
+	const moverCellClassName = classnames(
+		'block-editor-list-view-block__mover-cell',
+		{ 'is-visible': isHovered || isSelected }
+	);
+
+	const listViewBlockSettingsClassName = classnames(
+		'block-editor-list-view-block__menu-cell',
+		{ 'is-visible': isHovered || isFirstSelectedBlock }
+	);
+
+	const listViewBlockEditClassName = classnames(
+		'block-editor-list-view-block__menu-cell',
+		{ 'is-visible': isHovered || isFirstSelectedBlock }
 	);
 
 	let colSpan;
@@ -216,6 +235,10 @@ function ListViewBlock( {
 	const dropdownClientIds = selectedClientIds.includes( clientId )
 		? selectedClientIds
 		: [ clientId ];
+
+	const MoreMenuComponent = LeafMoreMenu
+		? LeafMoreMenu
+		: BlockSettingsDropdown;
 
 	return (
 		<ListViewLeaf
@@ -307,26 +330,53 @@ function ListViewBlock( {
 			) }
 
 			{ showBlockActions && (
-				<TreeGridCell
-					className={ listViewBlockSettingsClassName }
-					aria-selected={ !! isSelected || forceSelectionContentLock }
-				>
-					{ ( { ref, tabIndex, onFocus } ) => (
-						<BlockSettingsDropdown
-							clientIds={ dropdownClientIds }
-							icon={ moreVertical }
-							label={ settingsAriaLabel }
-							toggleProps={ {
-								ref,
-								className: 'block-editor-list-view-block__menu',
-								tabIndex,
-								onFocus,
-							} }
-							disableOpenOnArrowDown
-							__experimentalSelectBlock={ updateSelection }
-						/>
-					) }
-				</TreeGridCell>
+				<>
+					<TreeGridCell
+						className={ listViewBlockEditClassName }
+						aria-selected={
+							!! isSelected || forceSelectionContentLock
+						}
+					>
+						{ ( props ) =>
+							isEditable && (
+								<BlockEditButton
+									{ ...props }
+									label={ editAriaLabel }
+									clientId={ clientId }
+								/>
+							)
+						}
+					</TreeGridCell>
+					<TreeGridCell
+						className={ listViewBlockSettingsClassName }
+						aria-selected={
+							!! isSelected || forceSelectionContentLock
+						}
+					>
+						{ ( { ref, tabIndex, onFocus } ) => (
+							<>
+								<MoreMenuComponent
+									clientIds={ dropdownClientIds }
+									block={ block }
+									clientId={ clientId }
+									icon={ moreVertical }
+									label={ settingsAriaLabel }
+									toggleProps={ {
+										ref,
+										className:
+											'block-editor-list-view-block__menu',
+										tabIndex,
+										onFocus,
+									} }
+									disableOpenOnArrowDown
+									__experimentalSelectBlock={
+										updateSelection
+									}
+								/>
+							</>
+						) }
+					</TreeGridCell>
+				</>
 			) }
 		</ListViewLeaf>
 	);

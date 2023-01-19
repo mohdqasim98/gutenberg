@@ -44,9 +44,7 @@ exports[`File block renders file error state without crashing 1`] = `
           "color": "gray",
         }
       }
-    >
-      
-    </Text>
+    />
     <View
       style={
         Object {
@@ -76,6 +74,7 @@ exports[`File block renders file error state without crashing 1`] = `
           fontFamily="serif"
           fontSize={16}
           isMultiline={false}
+          lineHeight={1}
           maxImagesWidth={200}
           onBackspace={[Function]}
           onBlur={[Function]}
@@ -174,6 +173,7 @@ exports[`File block renders file error state without crashing 1`] = `
           fontFamily="serif"
           fontSize={16}
           isMultiline={false}
+          lineHeight={1}
           maxImagesWidth={200}
           minWidth={40}
           onBackspace={[Function]}
@@ -266,9 +266,7 @@ exports[`File block renders file without crashing 1`] = `
           "color": "gray",
         }
       }
-    >
-      
-    </Text>
+    />
     <View
       style={
         Object {
@@ -298,6 +296,7 @@ exports[`File block renders file without crashing 1`] = `
           fontFamily="serif"
           fontSize={16}
           isMultiline={false}
+          lineHeight={1}
           maxImagesWidth={200}
           onBackspace={[Function]}
           onBlur={[Function]}
@@ -378,6 +377,7 @@ exports[`File block renders file without crashing 1`] = `
           fontFamily="serif"
           fontSize={16}
           isMultiline={false}
+          lineHeight={1}
           maxImagesWidth={200}
           minWidth={40}
           onBackspace={[Function]}

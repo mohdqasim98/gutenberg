@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __experimentalItemGroup as ItemGroup } from '@wordpress/components';
-import { typography, color, layout } from '@wordpress/icons';
+import { typography, border, color, layout } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -12,14 +12,17 @@ import { useHasBorderPanel } from './border-panel';
 import { useHasColorPanel } from './color-utils';
 import { useHasDimensionsPanel } from './dimensions-panel';
 import { useHasTypographyPanel } from './typography-panel';
+import { useHasVariationsPanel } from './variations-panel';
 import { NavigationButtonAsItem } from './navigation-button';
+import { ScreenVariations } from './screen-variations';
 
 function ContextMenu( { name, parentMenu = '' } ) {
 	const hasTypographyPanel = useHasTypographyPanel( name );
 	const hasColorPanel = useHasColorPanel( name );
 	const hasBorderPanel = useHasBorderPanel( name );
 	const hasDimensionsPanel = useHasDimensionsPanel( name );
-	const hasLayoutPanel = hasBorderPanel || hasDimensionsPanel;
+	const hasLayoutPanel = hasDimensionsPanel;
+	const hasVariationsPanel = useHasVariationsPanel( name, parentMenu );
 
 	return (
 		<ItemGroup>
@@ -41,6 +44,15 @@ function ContextMenu( { name, parentMenu = '' } ) {
 					{ __( 'Colors' ) }
 				</NavigationButtonAsItem>
 			) }
+			{ hasBorderPanel && (
+				<NavigationButtonAsItem
+					icon={ border }
+					path={ parentMenu + '/border' }
+					aria-label={ __( 'Border styles' ) }
+				>
+					{ __( 'Border' ) }
+				</NavigationButtonAsItem>
+			) }
 			{ hasLayoutPanel && (
 				<NavigationButtonAsItem
 					icon={ layout }
@@ -49,6 +61,9 @@ function ContextMenu( { name, parentMenu = '' } ) {
 				>
 					{ __( 'Layout' ) }
 				</NavigationButtonAsItem>
+			) }
+			{ hasVariationsPanel && (
+				<ScreenVariations name={ name } path={ parentMenu } />
 			) }
 		</ItemGroup>
 	);

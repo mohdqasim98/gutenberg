@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { get, find } from 'lodash';
+import { get } from 'lodash';
 
 /**
  * Internal dependencies
@@ -86,18 +86,58 @@ export const PRESET_METADATA = [
 	},
 ];
 
-const STYLE_PATH_TO_CSS_VAR_INFIX = {
+export const STYLE_PATH_TO_CSS_VAR_INFIX = {
 	'color.background': 'color',
 	'color.text': 'color',
 	'elements.link.color.text': 'color',
+	'elements.link.:hover.color.text': 'color',
+	'elements.link.typography.fontFamily': 'font-family',
+	'elements.link.typography.fontSize': 'font-size',
 	'elements.button.color.text': 'color',
-	'elements.button.backgroundColor': 'background-color',
+	'elements.button.color.background': 'color',
+	'elements.button.typography.fontFamily': 'font-family',
+	'elements.button.typography.fontSize': 'font-size',
 	'elements.heading.color': 'color',
-	'elements.heading.backgroundColor': 'background-color',
+	'elements.heading.color.background': 'color',
+	'elements.heading.typography.fontFamily': 'font-family',
 	'elements.heading.gradient': 'gradient',
+	'elements.heading.color.gradient': 'gradient',
+	'elements.h1.color': 'color',
+	'elements.h1.color.background': 'color',
+	'elements.h1.typography.fontFamily': 'font-family',
+	'elements.h1.color.gradient': 'gradient',
+	'elements.h2.color': 'color',
+	'elements.h2.color.background': 'color',
+	'elements.h2.typography.fontFamily': 'font-family',
+	'elements.h2.color.gradient': 'gradient',
+	'elements.h3.color': 'color',
+	'elements.h3.color.background': 'color',
+	'elements.h3.typography.fontFamily': 'font-family',
+	'elements.h3.color.gradient': 'gradient',
+	'elements.h4.color': 'color',
+	'elements.h4.color.background': 'color',
+	'elements.h4.typography.fontFamily': 'font-family',
+	'elements.h4.color.gradient': 'gradient',
+	'elements.h5.color': 'color',
+	'elements.h5.color.background': 'color',
+	'elements.h5.typography.fontFamily': 'font-family',
+	'elements.h5.color.gradient': 'gradient',
+	'elements.h6.color': 'color',
+	'elements.h6.color.background': 'color',
+	'elements.h6.typography.fontFamily': 'font-family',
+	'elements.h6.color.gradient': 'gradient',
 	'color.gradient': 'gradient',
 	'typography.fontSize': 'font-size',
 	'typography.fontFamily': 'font-family',
+};
+
+// A static list of block attributes that store global style preset slugs.
+export const STYLE_PATH_TO_PRESET_BLOCK_ATTRIBUTE = {
+	'color.background': 'backgroundColor',
+	'color.text': 'textColor',
+	'color.gradient': 'gradient',
+	'typography.fontSize': 'fontSize',
+	'typography.fontFamily': 'fontFamily',
 };
 
 function findInPresetsBy(
@@ -120,8 +160,7 @@ function findInPresetsBy(
 			for ( const origin of origins ) {
 				const presets = presetByOrigin[ origin ];
 				if ( presets ) {
-					const presetObject = find(
-						presets,
+					const presetObject = presets.find(
 						( preset ) =>
 							preset[ presetProperty ] === presetValueValue
 					);
@@ -164,7 +203,9 @@ export function getPresetVariableFromValue(
 
 	const cssVarInfix = STYLE_PATH_TO_CSS_VAR_INFIX[ variableStylePath ];
 
-	const metadata = find( PRESET_METADATA, [ 'cssVarInfix', cssVarInfix ] );
+	const metadata = PRESET_METADATA.find(
+		( data ) => data.cssVarInfix === cssVarInfix
+	);
 
 	if ( ! metadata ) {
 		// The property doesn't have preset data
@@ -196,7 +237,9 @@ function getValueFromPresetVariable(
 	variable,
 	[ presetType, slug ]
 ) {
-	const metadata = find( PRESET_METADATA, [ 'cssVarInfix', presetType ] );
+	const metadata = PRESET_METADATA.find(
+		( data ) => data.cssVarInfix === presetType
+	);
 	if ( ! metadata ) {
 		return variable;
 	}
@@ -320,4 +363,17 @@ export function scopeSelector( scope, selector ) {
 	} );
 
 	return selectorsScoped.join( ', ' );
+}
+
+/**
+ *
+ * @param {string} path The variation path in the Global Styles tree.
+ *
+ * @return {string} The variation class name.
+ */
+export function getVariationClassNameFromPath( path ) {
+	if ( ! path ) {
+		return '';
+	}
+	return `is-style-${ path.split( '.' )[ 1 ] }`;
 }
