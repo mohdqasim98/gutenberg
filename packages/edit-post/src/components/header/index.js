@@ -11,6 +11,10 @@ import { useSelect } from '@wordpress/data';
 import { PinnedItems } from '@wordpress/interface';
 import { useViewportMatch } from '@wordpress/compose';
 import { __unstableMotion as motion } from '@wordpress/components';
+import {
+	store as blockEditorStore,
+	BlockToolbar,
+} from '@wordpress/block-editor';
 
 /**
  * Internal dependencies
@@ -30,10 +34,20 @@ function Header( { setEntitiesSavedStatesCallback } ) {
 		hasActiveMetaboxes,
 		isPublishSidebarOpened,
 		isSaving,
+		hasFixedToolbar,
+		firstParentClientId,
+		selectedBlockClientId,
 		showIconLabels,
 		isDistractionFree,
-	} = useSelect(
-		( select ) => ( {
+	} = useSelect( ( select ) => {
+		const { getSettings, getBlockParents, getSelectedBlockClientId } =
+			select( blockEditorStore );
+		const settings = getSettings();
+		const _selectedBlockClientId = getSelectedBlockClientId();
+		const parents = getBlockParents( _selectedBlockClientId );
+		const _firstParentClientId = parents[ parents.length - 1 ];
+		return {
+			selectedBlockClientId: _selectedBlockClientId,
 			hasActiveMetaboxes: select( editPostStore ).hasMetaBoxes(),
 			isPublishSidebarOpened:
 				select( editPostStore ).isPublishSidebarOpened(),
@@ -43,9 +57,10 @@ function Header( { setEntitiesSavedStatesCallback } ) {
 			isDistractionFree:
 				select( editPostStore ).isFeatureActive( 'distractionFree' ) &&
 				isLargeViewport,
-		} ),
-		[]
-	);
+			hasFixedToolbar: settings.hasFixedToolbar,
+			firstParentClientId: _firstParentClientId,
+		};
+	}, [] );
 
 	const classes = classnames( 'edit-post-header' );
 
@@ -74,7 +89,24 @@ function Header( { setEntitiesSavedStatesCallback } ) {
 				transition={ { type: 'tween', delay: 0.8 } }
 				className="edit-post-header__toolbar"
 			>
-				<HeaderToolbar />
+				{ ! hasFixedToolbar && <HeaderToolbar /> }
+				{ ! selectedBlockClientId && hasFixedToolbar && (
+					<HeaderToolbar />
+				) }
+				{ hasFixedToolbar && (
+					<div
+						style={
+							firstParentClientId
+								? {
+										position: 'relative',
+										left: '70px',
+								  }
+								: {}
+						}
+					>
+						<BlockToolbar hideDragHandle={ hasFixedToolbar } />
+					</div>
+				) }
 				<TemplateTitle />
 			</motion.div>
 			<motion.div
