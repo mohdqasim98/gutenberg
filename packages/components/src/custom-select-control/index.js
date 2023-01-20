@@ -21,7 +21,6 @@ import { Select as SelectControlSelect } from '../select-control/styles/select-c
 import SelectControlChevronDown from '../select-control/chevron-down';
 import { InputBaseWithBackCompatMinWidth } from './styles';
 import { StyledLabel } from '../base-control/styles/base-control-styles';
-import { lock } from '../experiments';
 
 const itemToString = ( item ) => item?.name;
 // This is needed so that in Windows, where
@@ -259,7 +258,7 @@ export function ExperimentalCustomSelectControl( props ) {
 	);
 }
 
-function CustomSelectControl( props ) {
+export default function CustomSelectControl( props ) {
 	return (
 		<ExperimentalCustomSelectControl
 			{ ...props }
@@ -267,7 +266,3 @@ function CustomSelectControl( props ) {
 		/>
 	);
 }
-
-lock( CustomSelectControl, ExperimentalCustomSelectControl );
-
-export default CustomSelectControl;

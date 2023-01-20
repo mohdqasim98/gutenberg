@@ -8,7 +8,10 @@ import classnames from 'classnames';
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { getBlockSupport, hasBlockSupport } from '@wordpress/blocks';
-import { BaseControl, CustomSelectControl } from '@wordpress/components';
+import {
+	BaseControl,
+	experiments as componentsExperiments,
+} from '@wordpress/components';
 import { createHigherOrderComponent, useInstanceId } from '@wordpress/compose';
 import {
 	useContext,
@@ -27,7 +30,7 @@ import InspectorControls from '../components/inspector-controls';
 import { cleanEmptyObject } from './utils';
 import { unlock } from '../experiments';
 
-const ExperimentalCustomSelectControl = unlock( CustomSelectControl );
+const { CustomSelectControl } = unlock( componentsExperiments );
 
 const POSITION_SUPPORT_KEY = 'position';
 
@@ -258,7 +261,7 @@ export function PositionEdit( props ) {
 		web: (
 			<>
 				<BaseControl className="block-editor-hooks__position-selection">
-					<ExperimentalCustomSelectControl
+					<CustomSelectControl
 						__nextUnconstrainedWidth
 						__next36pxDefaultSize
 						className="block-editor-hooks__position-selection__select-control"

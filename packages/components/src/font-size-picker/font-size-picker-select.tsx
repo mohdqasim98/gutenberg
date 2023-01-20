@@ -6,16 +6,13 @@ import { __, sprintf } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import CustomSelectControl from '../custom-select-control';
+import { ExperimentalCustomSelectControl as CustomSelectControl } from '../custom-select-control';
 import { parseQuantityAndUnitFromRawValue } from '../unit-control';
 import type {
 	FontSizePickerSelectProps,
 	FontSizePickerSelectOption,
 } from './types';
 import { getCommonSizeUnit, isSimpleCssValue } from './utils';
-import { unlock } from '../experiments';
-
-const ExperimentalCustomSelectControl = unlock( CustomSelectControl );
 
 const DEFAULT_OPTION: FontSizePickerSelectOption = {
 	key: 'default',
@@ -69,7 +66,7 @@ const FontSizePickerSelect = ( props: FontSizePickerSelectProps ) => {
 		: DEFAULT_OPTION;
 
 	return (
-		<ExperimentalCustomSelectControl
+		<CustomSelectControl
 			__nextUnconstrainedWidth
 			className="components-font-size-picker__select"
 			label={ __( 'Font size' ) }
