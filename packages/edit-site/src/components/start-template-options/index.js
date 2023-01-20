@@ -4,17 +4,20 @@
 import { Modal } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect, useMemo } from '@wordpress/element';
-import { __experimentalBlockPatternsList as BlockPatternsList } from '@wordpress/block-editor';
+import {
+	__experimentalBlockPatternsList as BlockPatternsList,
+	store as blockEditorStore,
+} from '@wordpress/block-editor';
 import { useSelect } from '@wordpress/data';
 import { useAsyncList, useResizeObserver } from '@wordpress/compose';
 import { store as preferencesStore } from '@wordpress/preferences';
 import { parse } from '@wordpress/blocks';
+import { store as coreStore, useEntityBlockEditor } from '@wordpress/core-data';
 
 /**
  * Internal dependencies
  */
 import { store as editSiteStore } from '../../store';
-import { store as coreStore, useEntityBlockEditor } from '@wordpress/core-data';
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 
@@ -35,17 +38,40 @@ function useFallbackTemplateContent( slug, isCustom = false ) {
 
 const START_BLANK_TITLE = __( 'Start blank' );
 
-function PatternSelection( { fallbackContent, onChoosePattern, postType } ) {
-	const [ resizeObserver, sizes ] = useResizeObserver();
-	const [ gridHeight, setGridHeight ] = useState( '320px' );
-	const [ , , onChange ] = useEntityBlockEditor( 'postType', postType );
-	const blockPatterns = useMemo(
-		() => [
+function useStartPatterns( fallbackContent ) {
+	const { slug, patterns } = useSelect( ( select ) => {
+		const { getEditedPostType, getEditedPostId } = select( editSiteStore );
+		const { getEntityRecord } = select( coreStore );
+		const postId = getEditedPostId();
+		const postType = getEditedPostType();
+		const record = getEntityRecord( 'postType', postType, postId );
+		const { getSettings } = select( blockEditorStore );
+		return {
+			slug: record.slug,
+			patterns: getSettings().__experimentalBlockPatterns,
+		};
+	}, [] );
+
+	return useMemo( () => {
+		// filter patterns that are supposed to be used in the current template being edited.
+		return [
 			{
 				name: 'fallback',
 				blocks: parse( fallbackContent ),
 				title: __( 'Fallback content' ),
 			},
+			...patterns
+				.filter( ( pattern ) => {
+					return (
+						Array.isArray( pattern.templateTypes ) &&
+						pattern.templateTypes.some( ( templateType ) =>
+							slug.startsWith( templateType )
+						)
+					);
+				} )
+				.map( ( pattern ) => {
+					return { ...pattern, blocks: parse( pattern.content ) };
+				} ),
 			{
 				name: 'start-blank',
 				blocks: parse(
@@ -53,9 +79,15 @@ function PatternSelection( { fallbackContent, onChoosePattern, postType } ) {
 				),
 				title: START_BLANK_TITLE,
 			},
-		],
-		[ fallbackContent ]
-	);
+		];
+	}, [ fallbackContent, slug, patterns ] );
+}
+
+function PatternSelection( { fallbackContent, onChoosePattern, postType } ) {
+	const [ resizeObserver, sizes ] = useResizeObserver();
+	const [ gridHeight, setGridHeight ] = useState( '320px' );
+	const [ , , onChange ] = useEntityBlockEditor( 'postType', postType );
+	const blockPatterns = useStartPatterns( fallbackContent );
 	const shownBlockPatterns = useAsyncList( blockPatterns );
 	// When the width changes update the height so we keep the 3x4 proporsions.
 	useEffect( () => {
