@@ -160,8 +160,7 @@ export default function Editor() {
 
 	const className = classnames( {
 		'show-icon-labels': showIconLabels,
-		'is-inserter-opened': isInserterOpen,
-		'is-list-view-opened': isListViewOpen,
+		'has-secondary-sidebar': isListViewOpen || isInserterOpen,
 	} );
 
 	return (
