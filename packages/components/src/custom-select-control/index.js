@@ -81,7 +81,8 @@ export function ExperimentalCustomSelectControl( props ) {
 		onMouseOut,
 		onFocus,
 		onBlur,
-		__experimentalShowSelectedHint = false,
+		// Experimental props:
+		showSelectedHint = false,
 	} = props;
 
 	const {
@@ -207,12 +208,11 @@ export function ExperimentalCustomSelectControl( props ) {
 					} ) }
 				>
 					{ itemToString( selectedItem ) }
-					{ __experimentalShowSelectedHint &&
-						selectedItem.__experimentalHint && (
-							<span className="components-custom-select-control__hint">
-								{ selectedItem.__experimentalHint }
-							</span>
-						) }
+					{ showSelectedHint && selectedItem.__experimentalHint && (
+						<span className="components-custom-select-control__hint">
+							{ selectedItem.__experimentalHint }
+						</span>
+					) }
 				</SelectControlSelect>
 			</InputBaseWithBackCompatMinWidth>
 			{ /* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */ }
@@ -262,7 +262,7 @@ export default function CustomSelectControl( props ) {
 	return (
 		<ExperimentalCustomSelectControl
 			{ ...props }
-			__experimentalShowSelectedHint={ false }
+			showSelectedHint={ false }
 		/>
 	);
 }
