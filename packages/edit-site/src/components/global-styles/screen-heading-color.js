@@ -16,14 +16,11 @@ import { useState } from '@wordpress/element';
  * Internal dependencies
  */
 import ScreenHeader from './header';
-import {
-	getSupportedGlobalStylesPanels,
-	useColorsPerOrigin,
-	useGradientsPerOrigin,
-} from './hooks';
+import { useColorsPerOrigin, useGradientsPerOrigin } from './hooks';
 import { unlock } from '../../experiments';
 
-const { useGlobalSetting, useGlobalStyle } = unlock( blockEditorExperiments );
+const { useGlobalSetting, useGlobalStyle, getSupportedGlobalStylesPanels } =
+	unlock( blockEditorExperiments );
 
 function ScreenHeadingColor( { name, variationPath = '' } ) {
 	const [ selectedLevel, setCurrentTab ] = useState( 'heading' );

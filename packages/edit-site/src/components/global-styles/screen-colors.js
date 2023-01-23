@@ -18,14 +18,15 @@ import { experiments as blockEditorExperiments } from '@wordpress/block-editor';
 import ScreenHeader from './header';
 import Palette from './palette';
 import { NavigationButtonAsItem } from './navigation-button';
-import { getSupportedGlobalStylesPanels } from './hooks';
 import Subtitle from './subtitle';
 import ColorIndicatorWrapper from './color-indicator-wrapper';
 import BlockPreviewPanel from './block-preview-panel';
 import { getVariationClassNameFromPath } from './utils';
 import { unlock } from '../../experiments';
 
-const { useGlobalStyle } = unlock( blockEditorExperiments );
+const { useGlobalStyle, getSupportedGlobalStylesPanels } = unlock(
+	blockEditorExperiments
+);
 
 function variationPathToURL( variationPath ) {
 	if ( ! variationPath ) {

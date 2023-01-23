@@ -18,10 +18,11 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { getSupportedGlobalStylesPanels, useColorsPerOrigin } from './hooks';
+import { useColorsPerOrigin } from './hooks';
 import { unlock } from '../../experiments';
 
-const { useGlobalSetting, useGlobalStyle } = unlock( blockEditorExperiments );
+const { useGlobalSetting, useGlobalStyle, getSupportedGlobalStylesPanels } =
+	unlock( blockEditorExperiments );
 
 export function useHasBorderPanel( name ) {
 	const controls = [

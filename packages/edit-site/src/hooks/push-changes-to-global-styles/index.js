@@ -26,10 +26,11 @@ import { store as noticesStore } from '@wordpress/notices';
 /**
  * Internal dependencies
  */
-import { getSupportedGlobalStylesPanels } from '../../components/global-styles/hooks';
 import { unlock } from '../../experiments';
 
-const { GlobalStylesContext } = unlock( blockEditorExperiments );
+const { GlobalStylesContext, getSupportedGlobalStylesPanels } = unlock(
+	blockEditorExperiments
+);
 
 // TODO: Temporary duplication of constant in @wordpress/block-editor. Can be
 // removed by moving PushChangesToGlobalStylesControl to

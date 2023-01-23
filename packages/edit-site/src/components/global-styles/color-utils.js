@@ -1,8 +1,14 @@
 /**
+ * WordPress dependencies
+ */
+import { experiments as blockEditorExperiments } from '@wordpress/block-editor';
+
+/**
  * Internal dependencies
  */
+import { unlock } from '../../experiments';
 
-import { getSupportedGlobalStylesPanels } from './hooks';
+const { getSupportedGlobalStylesPanels } = unlock( blockEditorExperiments );
 
 export function useHasColorPanel( name ) {
 	const supports = getSupportedGlobalStylesPanels( name );

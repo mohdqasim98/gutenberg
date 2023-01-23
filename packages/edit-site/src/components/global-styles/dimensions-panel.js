@@ -27,10 +27,10 @@ import { Icon, positionCenter, stretchWide } from '@wordpress/icons';
 /**
  * Internal dependencies
  */
-import { getSupportedGlobalStylesPanels } from './hooks';
 import { unlock } from '../../experiments';
 
-const { useGlobalSetting, useGlobalStyle } = unlock( blockEditorExperiments );
+const { useGlobalSetting, useGlobalStyle, getSupportedGlobalStylesPanels } =
+	unlock( blockEditorExperiments );
 
 const AXIAL_SIDES = [ 'horizontal', 'vertical' ];
 

@@ -11,10 +11,11 @@ import {
  * Internal dependencies
  */
 import ScreenHeader from './header';
-import { getSupportedGlobalStylesPanels, useColorsPerOrigin } from './hooks';
+import { useColorsPerOrigin } from './hooks';
 import { unlock } from '../../experiments';
 
-const { useGlobalSetting, useGlobalStyle } = unlock( blockEditorExperiments );
+const { useGlobalSetting, useGlobalStyle, getSupportedGlobalStylesPanels } =
+	unlock( blockEditorExperiments );
 
 function ScreenTextColor( { name, variationPath = '' } ) {
 	const supports = getSupportedGlobalStylesPanels( name );
