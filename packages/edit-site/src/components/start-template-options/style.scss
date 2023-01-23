@@ -19,11 +19,11 @@
 	margin-top: $grid-unit-05;
 	gap: $grid-unit-30;
 	grid-template-columns: repeat(auto-fit, minmax(min(100%/2, max(240px, 100%/10)), 1fr));
-	grid-auto-rows: var(--wp-edit-site-start-template-options-grid-height);
 	.block-editor-block-patterns-list__list-item {
 		break-inside: avoid-column;
 		margin-bottom: 0;
 		width: 100%;
+		aspect-ratio: 3/4;
 
 		.block-editor-block-preview__container {
 			height: 100%;

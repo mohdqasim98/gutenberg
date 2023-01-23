@@ -6,7 +6,7 @@ import { __ } from '@wordpress/i18n';
 import { useState, useEffect, useMemo } from '@wordpress/element';
 import { __experimentalBlockPatternsList as BlockPatternsList } from '@wordpress/block-editor';
 import { useSelect } from '@wordpress/data';
-import { useAsyncList, useResizeObserver } from '@wordpress/compose';
+import { useAsyncList } from '@wordpress/compose';
 import { store as preferencesStore } from '@wordpress/preferences';
 import { parse } from '@wordpress/blocks';
 
@@ -36,8 +36,6 @@ function useFallbackTemplateContent( slug, isCustom = false ) {
 const START_BLANK_TITLE = __( 'Start blank' );
 
 function PatternSelection( { fallbackContent, onChoosePattern, postType } ) {
-	const [ resizeObserver, sizes ] = useResizeObserver();
-	const [ gridHeight, setGridHeight ] = useState( '320px' );
 	const [ , , onChange ] = useEntityBlockEditor( 'postType', postType );
 	const blockPatterns = useMemo(
 		() => [
@@ -57,24 +55,14 @@ function PatternSelection( { fallbackContent, onChoosePattern, postType } ) {
 		[ fallbackContent ]
 	);
 	const shownBlockPatterns = useAsyncList( blockPatterns );
-	// When the width changes update the height so we keep the 3x4 proporsions.
-	useEffect( () => {
-		const elementOffSetWidth = window?.document?.querySelector(
-			'.edit-site-start-template-options__pattern-container .block-editor-block-patterns-list__list-item'
-		)?.offsetWidth;
-		if ( elementOffSetWidth ) {
-			setGridHeight( `${ ( elementOffSetWidth * 4 ) / 3 }px` );
-		}
-	}, [ shownBlockPatterns, sizes.width ] );
+
 	return (
 		<div
 			className="edit-site-start-template-options__pattern-container"
 			style={ {
 				'--wp-edit-site-start-template-options-start-blank': `"${ START_BLANK_TITLE }"`,
-				'--wp-edit-site-start-template-options-grid-height': gridHeight,
 			} }
 		>
-			{ resizeObserver }
 			<BlockPatternsList
 				blockPatterns={ blockPatterns }
 				shownPatterns={ shownBlockPatterns }
