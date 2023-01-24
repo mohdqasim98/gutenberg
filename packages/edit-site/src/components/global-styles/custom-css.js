@@ -49,8 +49,18 @@ function CustomCSSControl( { blockName } ) {
 			return;
 		}
 		setCustomCSS( value );
-		// TODO: transform it to find syntax error. Note that it will be transformed again
-		// after applied to the preview frame. We should refactor this to prevent double-transform.
+		if ( cssError ) {
+			const [ transformed ] = transformStyles(
+				[ { css: value } ],
+				'.editor-styles-wrapper'
+			);
+			if ( transformed ) {
+				setCSSError( null );
+			}
+		}
+	}
+
+	function handleOnBlur( value ) {
 		const [ transformed ] = transformStyles(
 			[ { css: value } ],
 			'.editor-styles-wrapper'
@@ -74,6 +84,7 @@ function CustomCSSControl( { blockName } ) {
 					themeCustomCSS
 				}
 				onChange={ ( value ) => handleOnChange( value ) }
+				onBlur={ handleOnBlur }
 				rows={ 15 }
 				className="edit-site-global-styles__custom-css-input"
 				spellCheck={ false }
