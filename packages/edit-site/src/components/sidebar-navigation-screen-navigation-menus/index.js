@@ -17,7 +17,7 @@ export default function SidebarNavigationScreenNavigationMenus() {
 			title={ __( 'Navigation' ) }
 			content={
 				<div className="edit-site-sidebar-navigation-screen-navigation-menus">
-					<NavigationInspector />
+					<NavigationInspector enableNavigation={ true } />
 				</div>
 			}
 		/>

@@ -54,7 +54,7 @@ export default function NavigationMenu( { innerBlocks, id } ) {
 		return (
 			<OffCanvasEditor
 				blocks={ innerBlocks }
-				selectBlockInCanvas={ false }
+				selectBlockInCanvas={ true }
 			/>
 		);
 	}

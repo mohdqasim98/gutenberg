@@ -17,10 +17,38 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import NavigationMenu from './navigation-menu';
+import { useHistory } from '../../routes';
 
 const NAVIGATION_MENUS_QUERY = [ { per_page: -1, status: 'publish' } ];
 
-export default function NavigationInspector() {
+function NavigationEffect() {
+	const history = useHistory();
+	const { postType, postId } = useSelect( ( select ) => {
+		const { getSelectedBlock } = select( blockEditorStore );
+		const selectedBlock = getSelectedBlock();
+		if ( ! selectedBlock ) {
+			return {};
+		}
+		const { attributes } = selectedBlock;
+		if (
+			attributes.kind === 'post-type' &&
+			attributes.id &&
+			attributes.type
+		) {
+			return { postType: attributes.type, postId: attributes.id };
+		}
+		return {};
+	} );
+	// When a navigation item liking to a post is selected, navigate on the site editor.
+	useEffect( () => {
+		if ( history && postType && postId ) {
+			history.push( { postType, postId } );
+		}
+	}, [ postType, postId, history ] );
+	return null;
+}
+
+export default function NavigationInspector( { enableNavigation = false } ) {
 	const {
 		selectedNavigationBlockId,
 		clientIdToRef,
@@ -206,6 +234,7 @@ export default function NavigationInspector() {
 					onChange={ onChange }
 					onInput={ onInput }
 				>
+					{ enableNavigation && <NavigationEffect /> }
 					<NavigationMenu
 						id={ navMenuListId }
 						innerBlocks={ publishedInnerBlocks }
