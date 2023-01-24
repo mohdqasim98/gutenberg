@@ -239,16 +239,40 @@ const ROOT_BLOCK_SUPPORTS = [
 	'fontStyle',
 	'fontWeight',
 	'lineHeight',
-	'textDecoration',
 	'padding',
 	'contentSize',
 	'wideSize',
 	'blockGap',
 ];
 
-export function getSupportedGlobalStylesPanels( name ) {
+function filterElementBlockSupports( blockSuppots, name, element ) {
+	const filteredBlockSupports = blockSuppots.filter( ( support ) => {
+		if ( support === 'fontSize' && element === 'heading' ) {
+			return false;
+		}
+
+		// This is only available for links
+		if ( support === 'textDecoration' ) {
+			return false;
+		}
+
+		return true;
+	} );
+
+	if ( ! name && element === 'heading' ) {
+		filteredBlockSupports.push( 'textTransform' );
+	}
+
+	if ( ! name && element === 'link' ) {
+		filteredBlockSupports.push( 'textDecoration' );
+	}
+
+	return filteredBlockSupports;
+}
+
+export function getSupportedGlobalStylesPanels( name, element ) {
 	if ( ! name ) {
-		return ROOT_BLOCK_SUPPORTS;
+		return filterElementBlockSupports( ROOT_BLOCK_SUPPORTS, name, element );
 	}
 
 	const blockType = getBlockType( name );
@@ -305,5 +329,5 @@ export function getSupportedGlobalStylesPanels( name ) {
 		}
 	} );
 
-	return supportKeys;
+	return filterElementBlockSupports( supportKeys, name, element );
 }
