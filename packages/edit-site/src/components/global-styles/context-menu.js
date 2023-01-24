@@ -34,10 +34,13 @@ import { IconWithCurrentColor } from './icon-with-current-color';
 import { ScreenVariations } from './screen-variations';
 import { unlock } from '../../experiments';
 
-const { useHasTypographyPanel } = unlock( blockEditorExperiments );
+const { useHasTypographyPanel, useGlobalSetting } = unlock(
+	blockEditorExperiments
+);
 
 function ContextMenu( { name, parentMenu = '' } ) {
-	const hasTypographyPanel = useHasTypographyPanel( name );
+	const [ settings ] = useGlobalSetting( '', name );
+	const hasTypographyPanel = useHasTypographyPanel( name, settings );
 	const hasColorPanel = useHasColorPanel( name );
 	const hasBorderPanel = useHasBorderPanel( name );
 	const hasDimensionsPanel = useHasDimensionsPanel( name );
