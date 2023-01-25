@@ -30,8 +30,13 @@ export default function TypographyPanel( {
 		prefix = variationPath + prefix;
 	}
 
-	const [ style, setStyle ] = useGlobalStyle( prefix, name );
-	const [ inheritedStyle ] = useGlobalStyle( prefix, name, 'user' );
+	const [ style ] = useGlobalStyle( prefix, name, 'user', false );
+	const [ inheritedStyle, setStyle ] = useGlobalStyle(
+		prefix,
+		name,
+		'all',
+		false
+	);
 	const [ settings ] = useGlobalSetting( '', name );
 
 	return (
