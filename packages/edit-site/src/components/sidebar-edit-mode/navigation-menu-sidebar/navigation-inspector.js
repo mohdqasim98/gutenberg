@@ -17,38 +17,24 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import NavigationMenu from './navigation-menu';
-import { useHistory } from '../../routes';
 
 const NAVIGATION_MENUS_QUERY = [ { per_page: -1, status: 'publish' } ];
 
-function NavigationEffect() {
-	const history = useHistory();
-	const { postType, postId } = useSelect( ( select ) => {
+function SelectionEffect( { onSelect } ) {
+	const selectedBlock = useSelect( ( select ) => {
 		const { getSelectedBlock } = select( blockEditorStore );
-		const selectedBlock = getSelectedBlock();
-		if ( ! selectedBlock ) {
-			return {};
-		}
-		const { attributes } = selectedBlock;
-		if (
-			attributes.kind === 'post-type' &&
-			attributes.id &&
-			attributes.type
-		) {
-			return { postType: attributes.type, postId: attributes.id };
-		}
-		return {};
+		return getSelectedBlock();
 	} );
-	// When a navigation item liking to a post is selected, navigate on the site editor.
+	// When a navigation item is selected call the onSelect callback.
 	useEffect( () => {
-		if ( history && postType && postId ) {
-			history.push( { postType, postId } );
+		if ( selectedBlock ) {
+			onSelect( selectedBlock );
 		}
-	}, [ postType, postId, history ] );
+	}, [ selectedBlock ] );
 	return null;
 }
 
-export default function NavigationInspector( { enableNavigation = false } ) {
+export default function NavigationInspector( { onSelect } ) {
 	const {
 		selectedNavigationBlockId,
 		clientIdToRef,
@@ -234,7 +220,7 @@ export default function NavigationInspector( { enableNavigation = false } ) {
 					onChange={ onChange }
 					onInput={ onInput }
 				>
-					{ enableNavigation && <NavigationEffect /> }
+					{ onSelect && <SelectionEffect onSelect={ onSelect } /> }
 					<NavigationMenu
 						id={ navMenuListId }
 						innerBlocks={ publishedInnerBlocks }
