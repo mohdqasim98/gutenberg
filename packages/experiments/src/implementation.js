@@ -45,7 +45,7 @@ const requiredConsent =
  *
  * @param {string} consent    The consent string.
  * @param {string} moduleName The name of the module that is opting in.
- * @return {{lock: Function, unlock: Function}} An object containing the lock and unlock functions.
+ * @return {{lock: ( object: Object | Function, privateData: any ) => void, unlock: ( object: Object | Function ) => any}} An object containing the lock and unlock functions.
  */
 export const __dangerousOptInToUnstableAPIsOnlyForCoreModules = (
 	consent,
