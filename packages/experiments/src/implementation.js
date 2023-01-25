@@ -60,15 +60,20 @@ export const __dangerousOptInToUnstableAPIsOnlyForCoreModules = (
 				'your product will inevitably break on one of the next WordPress releases.'
 		);
 	}
-	// if ( registeredExperiments.includes( moduleName ) ) {
-	// 	throw new Error(
-	// 		`You tried to opt-in to unstable APIs as module "${ moduleName }" which is already registered. ` +
-	// 			'This feature is only for JavaScript modules shipped with WordPress core. ' +
-	// 			'Please do not use it in plugins and themes as the unstable APIs will be removed ' +
-	// 			'without a warning. If you ignore this error and depend on unstable features, ' +
-	// 			'your product will inevitably break on one of the next WordPress releases.'
-	// 	);
-	// }
+	if ( ! process.env.IS_GUTENBERG_PLUGIN ) {
+		// This check doesn't play well with Story Books / Hot Module Reloading
+		// and isn't included in the Gutenberg plugin. It only matters in the
+		// WordPress core release.
+		if ( registeredExperiments.includes( moduleName ) ) {
+			throw new Error(
+				`You tried to opt-in to unstable APIs as module "${ moduleName }" which is already registered. ` +
+					'This feature is only for JavaScript modules shipped with WordPress core. ' +
+					'Please do not use it in plugins and themes as the unstable APIs will be removed ' +
+					'without a warning. If you ignore this error and depend on unstable features, ' +
+					'your product will inevitably break on one of the next WordPress releases.'
+			);
+		}
+	}
 	if ( consent !== requiredConsent ) {
 		throw new Error(
 			`You tried to opt-in to unstable APIs without confirming you know the consequences. ` +
