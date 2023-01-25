@@ -123,8 +123,8 @@ function useHasTextDecorationControl( name, element ) {
 function useHasTextColumnsControl( name ) {
 	const supports = getSupportedGlobalStylesPanels( name );
 	return (
-		useSetting( 'typography.textColumns', name )[ 0 ] &&
-		supports.includes( 'textColumns' )
+		useGlobalSetting( 'typography.textColumns', name )[ 0 ] &&
+		supports.includes( 'columnCount' )
 	);
 }
 
@@ -242,11 +242,13 @@ export default function TypographyPanel( {
 			variationPath + prefix + 'typography.fontFamily',
 			name
 		);
+
 	const { fontSize, setFontSize, hasFontSize, resetFontSize } =
 		useFontSizeWithReset(
 			variationPath + prefix + 'typography.fontSize',
 			name
 		);
+
 	const {
 		fontStyle,
 		setFontStyle,
@@ -255,11 +257,13 @@ export default function TypographyPanel( {
 		hasFontAppearance,
 		resetFontAppearance,
 	} = useFontAppearance( variationPath + prefix, name );
+
 	const [ lineHeight, setLineHeight, hasLineHeight, resetLineHeight ] =
 		useStyleWithReset(
 			variationPath + prefix + 'typography.lineHeight',
 			name
 		);
+
 	const [
 		letterSpacing,
 		setLetterSpacing,
@@ -269,6 +273,7 @@ export default function TypographyPanel( {
 		variationPath + prefix + 'typography.letterSpacing',
 		name
 	);
+
 	const [
 		textTransform,
 		setTextTransform,
@@ -278,6 +283,7 @@ export default function TypographyPanel( {
 		variationPath + prefix + 'typography.textTransform',
 		name
 	);
+
 	const [
 		textDecoration,
 		setTextDecoration,
@@ -287,8 +293,12 @@ export default function TypographyPanel( {
 		variationPath + prefix + 'typography.textDecoration',
 		name
 	);
+
 	const [ textColumns, setTextColumns, hasTextColumns, resetTextColumns ] =
-		useStyleWithReset( prefix + 'typography.textColumns', name );
+		useStyleWithReset(
+			variationPath + prefix + 'typography.textColumns',
+			name
+		);
 
 	const resetAll = () => {
 		resetFontFamily();
@@ -444,6 +454,7 @@ export default function TypographyPanel( {
 						onChange={ setTextColumns }
 						size="__unstable-large"
 						value={ textColumns }
+						initialPosition={ 1 }
 					/>
 				</ToolsPanelItem>
 			) }
