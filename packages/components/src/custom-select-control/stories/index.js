@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import { ExperimentalCustomSelectControl as CustomSelectControl } from '..';
+import CustomSelectControl from '..';
 
 export default {
 	title: 'Components/CustomSelectControl',

@@ -6,7 +6,7 @@ import { render, fireEvent, screen } from '@testing-library/react';
 /**
  * Internal dependencies
  */
-import { ExperimentalCustomSelectControl as CustomSelectControl } from '..';
+import CustomSelectControl from '..';
 
 describe( 'CustomSelectControl', () => {
 	it( 'Captures the keypress event and does not let it propagate', () => {

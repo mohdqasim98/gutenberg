@@ -62,7 +62,7 @@ const stateReducer = (
 	}
 };
 
-export function ExperimentalCustomSelectControl( props ) {
+export default function CustomSelectControl( props ) {
 	const {
 		/** Start opting into the larger default height that will become the default size in a future version. */
 		__next36pxDefaultSize = false,
@@ -258,11 +258,6 @@ export function ExperimentalCustomSelectControl( props ) {
 	);
 }
 
-export default function CustomSelectControl( props ) {
-	return (
-		<ExperimentalCustomSelectControl
-			{ ...props }
-			showSelectedHint={ false }
-		/>
-	);
+export function StableCustomSelectControl( props ) {
+	return <CustomSelectControl { ...props } showSelectedHint={ false } />;
 }

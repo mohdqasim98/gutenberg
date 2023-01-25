@@ -6,7 +6,7 @@ import { __, sprintf } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { ExperimentalCustomSelectControl as CustomSelectControl } from '../custom-select-control';
+import CustomSelectControl from '../custom-select-control';
 import { parseQuantityAndUnitFromRawValue } from '../unit-control';
 import type {
 	FontSizePickerSelectProps,

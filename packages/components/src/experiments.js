@@ -6,7 +6,7 @@ import { __dangerousOptInToUnstableAPIsOnlyForCoreModules } from '@wordpress/exp
 /**
  * Internal dependencies
  */
-import { ExperimentalCustomSelectControl } from './custom-select-control';
+import { default as CustomSelectControl } from './custom-select-control';
 
 export const { lock, unlock } =
 	__dangerousOptInToUnstableAPIsOnlyForCoreModules(
@@ -16,5 +16,5 @@ export const { lock, unlock } =
 
 export const experiments = {};
 lock( experiments, {
-	CustomSelectControl: ExperimentalCustomSelectControl,
+	CustomSelectControl,
 } );
