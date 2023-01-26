@@ -58,7 +58,7 @@ const ExperimentMainContent = ( {
 	const label = navigationMenu
 		? sprintf(
 				/* translators: %s: The name of a menu. */
-				__( 'Navigation menu: %s' ),
+				__( 'Structure for navigation menu: %s' ),
 				navigationMenu.title
 		  )
 		: __( 'You have not yet created any menus. Displaying a list of your Pages' );
