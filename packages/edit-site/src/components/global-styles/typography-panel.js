@@ -18,7 +18,7 @@ export default function TypographyPanel( {
 	name,
 	element,
 	headingLevel,
-	variationPath = '',
+	variation = '',
 } ) {
 	let prefix = '';
 	if ( element === 'heading' ) {
@@ -26,8 +26,10 @@ export default function TypographyPanel( {
 	} else if ( element && element !== 'text' ) {
 		prefix = `elements.${ element }.`;
 	}
-	if ( variationPath ) {
-		prefix = variationPath + prefix;
+	if ( variation ) {
+		prefix = prefix
+			? `variations.${ variation }.${ prefix }`
+			: `variations.${ variation }`;
 	}
 
 	const [ style ] = useGlobalStyle( prefix, name, 'user', false );
@@ -37,6 +39,7 @@ export default function TypographyPanel( {
 		'all',
 		false
 	);
+
 	const [ settings ] = useGlobalSetting( '', name );
 
 	return (

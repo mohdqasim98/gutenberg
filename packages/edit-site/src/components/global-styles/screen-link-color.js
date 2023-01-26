@@ -18,7 +18,8 @@ import { unlock } from '../../experiments';
 const { useGlobalSetting, useGlobalStyle, getSupportedGlobalStylesPanels } =
 	unlock( blockEditorExperiments );
 
-function ScreenLinkColor( { name, variationPath = '' } ) {
+function ScreenLinkColor( { name, variation = '' } ) {
+	const prefix = variation ? `variations.${ variation }.` : '';
 	const supports = getSupportedGlobalStylesPanels( name );
 	const [ areCustomSolidsEnabled ] = useGlobalSetting( 'color.custom', name );
 	const colorsPerOrigin = useColorsPerOrigin( name );
@@ -33,15 +34,15 @@ function ScreenLinkColor( { name, variationPath = '' } ) {
 		default: {
 			label: __( 'Default' ),
 			value: useGlobalStyle(
-				variationPath + 'elements.link.color.text',
+				prefix + 'elements.link.color.text',
 				name
 			)[ 0 ],
 			handler: useGlobalStyle(
-				variationPath + 'elements.link.color.text',
+				prefix + 'elements.link.color.text',
 				name
 			)[ 1 ],
 			userValue: useGlobalStyle(
-				variationPath + 'elements.link.color.text',
+				prefix + 'elements.link.color.text',
 				name,
 				'user'
 			)[ 0 ],
@@ -49,15 +50,15 @@ function ScreenLinkColor( { name, variationPath = '' } ) {
 		hover: {
 			label: __( 'Hover' ),
 			value: useGlobalStyle(
-				variationPath + 'elements.link.:hover.color.text',
+				prefix + 'elements.link.:hover.color.text',
 				name
 			)[ 0 ],
 			handler: useGlobalStyle(
-				variationPath + 'elements.link.:hover.color.text',
+				prefix + 'elements.link.:hover.color.text',
 				name
 			)[ 1 ],
 			userValue: useGlobalStyle(
-				variationPath + 'elements.link.:hover.color.text',
+				prefix + 'elements.link.:hover.color.text',
 				name,
 				'user'
 			)[ 0 ],
