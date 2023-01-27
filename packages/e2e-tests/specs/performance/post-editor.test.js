@@ -23,7 +23,6 @@ import {
  */
 import {
 	readFile,
-	deleteFile,
 	getTypingEventDurations,
 	getClickEventDurations,
 	getHoverEventDurations,
@@ -77,7 +76,9 @@ describe( 'Post Editor Performance', () => {
 		inserterHover: [],
 		inserterSearch: [],
 	};
-	const traceFile = __dirname + '/trace.json';
+	const traceFile = '/home/runner/perf-post-editor-trace.json';
+	// eslint-disable-next-line no-console
+	console.log( `Storing trace in ${ traceFile }` );
 	let traceResults;
 
 	afterAll( async () => {
@@ -86,7 +87,6 @@ describe( 'Post Editor Performance', () => {
 			join( __dirname, resultsFilename ),
 			JSON.stringify( results, null, 2 )
 		);
-		deleteFile( traceFile );
 	} );
 
 	beforeEach( async () => {
