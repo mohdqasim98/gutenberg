@@ -55,7 +55,7 @@ const ExperimentMainContent = ( {
 		return <Spinner />;
 	}
 
-	const label = navigationMenu
+	const description = navigationMenu
 		? sprintf(
 				/* translators: %s: The name of a menu. */
 				__( 'Structure for navigation menu: %s' ),
@@ -68,7 +68,7 @@ const ExperimentMainContent = ( {
 			isExpanded={ true }
 			selectBlockInCanvas={ false }
 			LeafMoreMenu={ LeafMoreMenu }
-			label={ label }
+			description={ description }
 		/>
 	);
 };

@@ -61,7 +61,7 @@ export const BLOCK_LIST_ITEM_HEIGHT = 36;
  * @param {boolean} props.isExpanded          Flag to determine whether nested levels are expanded by default.
  * @param {boolean} props.selectBlockInCanvas Flag to determine whether the list view should be a block selection mechanism.
  * @param {Object}  props.LeafMoreMenu        Optional more menu substitution.
- * @param {string}  props.label               Optional accessible name for the tree grid component.
+ * @param {string}  props.description         Optional accessible description for the tree grid component.
  * @param {Object}  ref                       Forwarded ref
  */
 function __ExperimentalOffCanvasEditor(
@@ -72,7 +72,7 @@ function __ExperimentalOffCanvasEditor(
 		isExpanded = false,
 		selectBlockInCanvas = true,
 		LeafMoreMenu,
-		label = __( 'Block navigation structure' ),
+		description = __( 'Block navigation structure' ),
 	},
 	ref
 ) {
@@ -213,12 +213,12 @@ function __ExperimentalOffCanvasEditor(
 				<TreeGrid
 					id={ id }
 					className="block-editor-list-view-tree"
-					aria-label={ label }
+					aria-label={ __( 'Block navigation structure' ) }
 					ref={ treeGridRef }
 					onCollapseRow={ collapseRow }
 					onExpandRow={ expandRow }
 					onFocusRow={ focusRow }
-					applicationAriaLabel={ label }
+					aria-description={ description }
 				>
 					<ListViewContext.Provider value={ contextValue }>
 						<ListViewBranch
