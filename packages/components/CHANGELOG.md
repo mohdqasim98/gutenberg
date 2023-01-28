@@ -11,6 +11,7 @@
 -   `Dropdown`: deprecate `position`  prop, use `popoverProps` instead ([46865](https://github.com/WordPress/gutenberg/pull/46865)).
 -   `Button`: improve padding for buttons with icon and text. ([46764](https://github.com/WordPress/gutenberg/pull/46764)).
 -   `ColorPalette`: Use computed color when css variable is passed to `ColorPicker` ([47181](https://github.com/WordPress/gutenberg/pull/47181)).
+-   `Popover`: add `overlay` option to the `placement` prop.
 
 ### Internal
 
@@ -22,6 +23,7 @@
  ([#47384](https://github.com/WordPress/gutenberg/pull/47384)).
 -   `Button`: Convert to TypeScript ([#46997](https://github.com/WordPress/gutenberg/pull/46997)).
 -   `QueryControls`: Convert to TypeScript ([#46721](https://github.com/WordPress/gutenberg/pull/46721)).
+-   `Popover`: Take iframe element scaling into account.
 
 ### Bug Fix
 
