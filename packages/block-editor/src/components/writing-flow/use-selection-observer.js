@@ -3,6 +3,7 @@
  */
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useRefEffect } from '@wordpress/compose';
+import { create } from '@wordpress/rich-text';
 
 /**
  * Internal dependencies
@@ -77,6 +78,28 @@ function setContentEditableWrapper( node, value ) {
 	if ( value ) node.focus();
 }
 
+function getRichTextElement( node ) {
+	const element =
+		node.nodeType === node.ELEMENT_NODE ? node : node.parentElement;
+	return element?.closest( '[data-rich-text-identifier]' );
+}
+
+function createRichTextValue( richTextElement ) {
+	const {
+		ownerDocument: { defaultView },
+	} = richTextElement;
+	const selection = defaultView.getSelection();
+	const range = selection.rangeCount > 0 ? selection.getRangeAt( 0 ) : null;
+
+	return create( {
+		element: richTextElement,
+		range,
+		__unstableIsEditableTree: true,
+		preserveWhiteSpace:
+			richTextElement.dataset.preserveWhiteSpace === 'true',
+	} );
+}
+
 /**
  * Sets a multi-selection based on the native selection across blocks.
  */
@@ -109,12 +132,11 @@ export default function useSelectionObserver() {
 					return;
 				}
 
-				let startClientId = getBlockClientId(
-					extractSelectionStartNode( selection )
-				);
-				let endClientId = getBlockClientId(
-					extractSelectionEndNode( selection )
-				);
+				const selectionStartNode =
+					extractSelectionStartNode( selection );
+				const selectionEndNode = extractSelectionEndNode( selection );
+				let startClientId = getBlockClientId( selectionStartNode );
+				let endClientId = getBlockClientId( selectionEndNode );
 				// If the selection has changed and we had pressed `shift+click`,
 				// we need to check if in an element that doesn't support
 				// text selection has been clicked.
@@ -163,7 +185,41 @@ export default function useSelectionObserver() {
 					];
 					const depth = findDepth( startPath, endPath );
 
-					multiSelect( startPath[ depth ], endPath[ depth ] );
+					if (
+						startPath[ depth ] !== startClientId ||
+						endPath[ depth ] !== endClientId
+					) {
+						multiSelect( startPath[ depth ], endPath[ depth ] );
+					} else {
+						const richTextElementStart =
+							getRichTextElement( selectionStartNode );
+						const richTextElementEnd =
+							getRichTextElement( selectionEndNode );
+						const richTextValueStart =
+							createRichTextValue( richTextElementStart );
+						const richTextValueEnd =
+							createRichTextValue( richTextElementEnd );
+						const startOffset =
+							richTextValueStart.start || richTextValueStart.end;
+						const endOffset =
+							richTextValueEnd.start || richTextValueEnd.end;
+						selectionChange( {
+							start: {
+								clientId: startClientId,
+								attributeKey:
+									richTextElementStart.dataset
+										.richTextIdentifier,
+								offset: startOffset,
+							},
+							end: {
+								clientId: endPath[ depth ],
+								attributeKey:
+									richTextElementEnd.dataset
+										.richTextIdentifier,
+								offset: endOffset,
+							},
+						} );
+					}
 				}
 			}
 

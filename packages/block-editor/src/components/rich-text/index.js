@@ -451,6 +451,8 @@ function RichTextWrapper(
 				) }
 				onFocus={ unstableOnFocus }
 				onKeyDown={ onKeyDown }
+				data-rich-text-identifier={ identifier }
+				data-rich-text-preserve-white-space={ preserveWhiteSpace }
 			/>
 		</>
 	);
